@@ -1,0 +1,12 @@
+name: build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2 #Get source code into the VM using an officially maintained GitHub action
+      - uses: actions/setup-node@v1 #Setup node on the VM using an officially maintained GitHub action
+        with:
+          node-version: 12
+      - run: npm i #Installs all dependencies from npm (does npm clean-install on VM/CI-server)
+      - run: npm run build #build the application
