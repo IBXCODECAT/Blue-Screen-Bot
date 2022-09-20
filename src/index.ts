@@ -1,16 +1,16 @@
-
 const express = require('express');
 const app = express();
 const PORT = 8080;
 
-const discord = require('discord.js');
-const dotenv = require('dotenv');
+import { Discord } from './Discord/discord'
+
+Discord();
 
 app.use(express.json());
 
 app.listen(
     PORT,
-    () => console.log(`alive on http://localhost:${PORT}`)
+    () => console.log(`Express alive on http://localhost:${PORT}`)
 );
 
 //Discord data request handler (returns)
