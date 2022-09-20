@@ -1,5 +1,5 @@
 import { Client } from 'discord.js'
-//import { RegisterCommands } from '../components/commands'
+import { RegisterCommands } from './../scripts/commands';
 
 export = {
     name: 'ready',
@@ -9,6 +9,6 @@ export = {
     execute(client: Client)
     {
         console.log(`Discord Client [${client.application?.id}] is ready!`);
-        //RegisterCommands(client);
+        RegisterCommands(client);
     }
 }
