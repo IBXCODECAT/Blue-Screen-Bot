@@ -1,24 +1,18 @@
 import { Client, Interaction } from "discord.js";
-import { FgCyan, FgGreen, FgRed, FgWhite, FgYellow } from "./consoleFormatting";
-import * as fs from 'fs';
+import { FgCyan, FgGreen, FgRed, FgWhite, FgYellow } from "../../scripts/consoleFormatting";
 import { CommandDefinition } from "../commands/interfaces/commandDefinition";
 import { toErrorBlock } from "./messageFormatting";
 
-//The extension to use when searching the file system (ts for ts-node, js for js-node)
-const fileExtension = '.ts';
+import { GetDiscordCommandDefinitions, GetDiscordProcedureFiles, ModuleFileExtension } from "../../scripts/filesystem";
 
-//This is the path to the command definitions & procedures directories
-const commandDefsPath = './../commands/definitions/'
-const proceduresPath = './../commands/procedures/'
 
-//Fetch a list of all command definitions in our command definitions directory
-const commandDefs = fs.readdirSync(__dirname + commandDefsPath).filter((file: string) => file.endsWith(fileExtension));
-const procedures = fs.readdirSync(__dirname + proceduresPath).filter((file: string) => file.endsWith(fileExtension));
+const commandDefs: Array<CommandDefinition> = GetDiscordCommandDefinitions();
+const procedures = GetDiscordProcedureFiles();
 
 export async function RegisterCommands(client: Client)
 {
     //Leave guildID empty to register commands across all servers (this process can take about 2 hours)
-    const guildID = '913885055598886922'; //BSS = 888875214459535360 | Staff = 913885055598886922
+    const guildID = ''; //BSS = 888875214459535360 | Staff = 913885055598886922
     const guild = client.guilds.cache.get(guildID); //Get the guild to register our commands in from our clients cache of joined guilds
     let commands; //Create our commands object to hold our command data
 
@@ -36,83 +30,45 @@ export async function RegisterCommands(client: Client)
     }
 
     //For each command file, load the module and create the commands using the propreties defined in the command definition
-    for(const file of commandDefs)
+    for(const command of commandDefs)
     {
-        const module: string = file.substring(0, file.length - 3);
-        const m_command: CommandDefinition = require(`${commandDefsPath}${module}`);
-
-        console.log(FgCyan + `Loaded command module: ${m_command.name}` + FgWhite);
-        
-        console.log(m_command);
-
         await commands?.create({
-            name: m_command.name,
-            description: m_command.description,
-            options: m_command.options,
+            name: command.name,
+            description: command.description,
+            options: command.options,
         })
     }
-
-    console.log(FgGreen + "Commands registered!");
 }
 
 export async function HandleCommands(client: Client, interaction: Interaction)
 {
-    //Is our interaction a command?
-    if(interaction.isCommand())
-    {
-        const { commandName } = interaction;
-        console.log("COMMAND NAME: " + commandName);
-        const commandDefPath = `${commandDefsPath}${commandName}`;
-
-        const m_command: CommandDefinition = require(commandDefPath);
-        
-        console.log(`${FgYellow}Running command at path: ${FgCyan}${commandDefPath}${FgYellow} using procedure ${FgCyan}${m_command.procedure}${FgWhite}`);
-
-        const procedureName = m_command.procedure;
-        
-        //Does this command have a procedure in it's definition? If not, attempt to reply with an error and return...
-        if(procedureName == undefined || procedureName == null)
-        {
-            try
-            {
-                interaction.reply({
-                    content: toErrorBlock("No procedure was found in the command definition!"),
-                    ephemeral: true
-                })
-            }
-            catch {} finally { return; }
-        }
-
-        //Do we have procedure definiton for this command? If not, attempt to reply with an error and return...
-        if(!procedures.includes(`${procedureName}${fileExtension}`))
-        {
-            try
-            {
-                interaction.reply({
-                    content: toErrorBlock("No matching procedure could be found for this command!"),
-                    ephemeral: true
-                })
-            }
-            catch { logCommandInteractionFailed() } finally { return; }
-        }
-
-        //Now we can start loading the procedure and executing it...
-
-        const procedureDefPath = `${proceduresPath}${procedureName}`;
-        console.log(procedureDefPath);
-
-        const procedure = require(procedureDefPath);
-
-        try
-        {
-            await procedure.Run(client, interaction);
-        } catch { logCommandInteractionFailed() }
-    }
-
-    //========================================================================
+    //Is our interaction a command? If it is not, return.
+    if(!interaction.isCommand()) return;
     
-    function logCommandInteractionFailed()
+    //Extract the command name from this interaction & define a variable to store this command's definiton in
+    const { commandName: thisCommandName } = interaction;
+    let thisCommandDefinition: CommandDefinition;
+    let thisProcedurename: string = "noprocedure";
+
+    //For each command definiton in our list of definitions...
+    for(const command of commandDefs)
     {
-        console.log(`${FgRed}Command Interaction Response Failed!${FgWhite}`);
+        //If the command defintion name matches this command's name...
+        if(command.name == thisCommandName)
+        {
+            //Set this command definiton to the command definition we found
+            thisCommandDefinition = command;
+            thisProcedurename = thisCommandDefinition?.procedure;
+        }
     }
+    
+    //Does this command have a procedure in it's definition? If not, return
+    if(thisProcedurename == undefined || thisProcedurename == null) return;
+
+    //Find the procedure for this command
+    const path = "./../commands/procedures/";
+    const procedure = require(`${path}${thisProcedurename}`);
+
+    //Run the procedure
+    procedure.Run(client, interaction);
 }

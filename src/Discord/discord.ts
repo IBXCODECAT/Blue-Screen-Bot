@@ -3,16 +3,13 @@
 import { Client } from 'discord.js';
 import { config } from 'dotenv';
 import * as fs from 'fs';
+import { API } from '../API/api';
 
 //Configure dotenv
 config();
 
-export function Discord()
+export function Discord(discordClient: Client)
 {
-    const discordClient = new Client({
-        intents: []
-    });
-
     discordClient.login(process.env.DISCORD_TOKEN);
 
     const eventFiles = fs.readdirSync(__dirname + "/events/").filter((file: string) => file.endsWith('.ts'));
