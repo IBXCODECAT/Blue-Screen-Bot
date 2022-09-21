@@ -1,4 +1,6 @@
-import { Client } from "discord.js";
+import { Client, DiscordAPIError, GuildMember, mergeDefault } from "discord.js";
+import { isSemicolonClassElement } from "typescript";
+import role = require("../Discord/commands/definitions/role");
 
 const express = require('express');
 const app = express();
@@ -14,16 +16,35 @@ export function API(client: Client)
     );
     
     //Discord data request handler (returns)
-    app.get('/discord', (req: any, res: any) => {
+    app.get('/discord', async (req: any, res: any) => {
         
-        const userID = req.query.userID;
+        let inGuild: boolean = false;
+        const userID = req.query.id;
         console.log(userID);
 
         //GET DISCORD USER BY ID HERE
+        let guild = client.guilds.cache.get('888875214459535360');
+        
+        let isStaff = false;
+
+        let member: GuildMember;
+        
+        try
+        {
+            member = await guild?.members.fetch(userID)!;
+        }
+        catch (ex)
+        {
+            console.log(ex);
+            res.status(400).send("Bad Request.");
+            return;
+        }
 
         res.status(200).send({
-            name: "",
-            roles: []
+            username: member?.user.username,
+            discriminator: member.user.tag,
+            joined: member.joinedAt,
+            joinedTimestamp: member.joinedTimestamp
         })
     });
 }
