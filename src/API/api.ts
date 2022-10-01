@@ -1,15 +1,32 @@
 import { config } from "dotenv";
 
 const express = require('express');
+const session = require('express-session');
+const passport = require('passport');
 const app = express();
 
-config(); //Configure dotenv
+const discord = require('./strategies/discordStrategy');
 
 const PORT = process.env.PORT || 8080; //Use env defined port or use 8080 (standard web server port)
 
+import auth_route = require("./routes/auth");
+
 export function API()
 {
-    app.use(express.json());
+    app.use(session({
+        secret: 'super secure secret',
+        cookie: {
+            maxAge: 60000 * 60 * 24, //One day
+        },
+        saveUninitialized: false
+    }))
+
+
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    //Middleware Routes
+    app.use('/auth', auth_route);
 
     app.listen(
         PORT,

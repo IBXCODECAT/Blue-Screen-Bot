@@ -1,7 +1,8 @@
 import { Client } from 'discord.js';
-
-import { Discord } from './Discord/discord'
 import { API } from './API/api'
+import { config } from 'dotenv';
+
+config();
 
 const discordClient = new Client({
     intents: []
