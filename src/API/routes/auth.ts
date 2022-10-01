@@ -6,7 +6,8 @@ const passport = require('passport');
 
 auth_route.get('/discord', passport.authenticate('discord'));
 auth_route.get('/discord/redirect', passport.authenticate('discord', {
-    failureRedirect: '/forbidden'
+    failureRedirect: '/forbidden',
+    successRedirect: '/dashboard'
 }), (req: any, res: any) => {
     res.status(200).send(req.user);
 });

@@ -13,6 +13,8 @@ const PORT = process.env.PORT || 8080; //Use env defined port or use 8080 (stand
 import db_connection = require('./database/db');
 
 import auth_route = require("./routes/auth");
+import dashboard_route = require('./routes/dashboard');
+
 
 db_connection.then(() => console.log('Connected to database.'));
 
@@ -23,7 +25,8 @@ export function API()
         cookie: {
             maxAge: 60000 * 60 * 24, //One day
         },
-        saveUninitialized: false
+        saveUninitialized: false,
+        name: 'Discord.OAuth2' //This will name our session id cookie
     }))
 
 
@@ -32,6 +35,7 @@ export function API()
 
     //Middleware Routes
     app.use('/auth', auth_route);
+    app.use('/dashboard', dashboard_route);
 
     app.listen(
         PORT,
