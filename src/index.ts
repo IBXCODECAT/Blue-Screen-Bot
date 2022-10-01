@@ -7,5 +7,5 @@ const discordClient = new Client({
     intents: []
 });
 
-Discord(discordClient)
-API(discordClient)
+//Discord(discordClient)
+API()
