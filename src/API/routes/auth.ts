@@ -8,11 +8,7 @@ auth_route.get('/discord', passport.authenticate('discord'));
 auth_route.get('/discord/redirect', passport.authenticate('discord', {
     failureRedirect: '/forbidden'
 }), (req: any, res: any) => {
-    res.status(200).send(200);
+    res.status(200).send(req.user);
 });
-
-/*auth_route.get('/discord', (req: any, res: any) => {
-    res.status(200).send(200);
-})*/
 
 export = auth_route;

@@ -8,12 +8,13 @@ const passport = require('passport');
 var scopes = ['identify', 'email', 'guilds', 'guilds.join'];
 
 passport.serializeUser((user: any, done: any) => {
-    console.log("Serializing User");
+    console.log("Serializing User...");
     console.log(user);
     done(null, user.id);
 });
 
 passport.deserializeUser(async (id: any, done: any) => {
+    console.log("Deserializing User...");
     const user = await DiscordUser.findById(id);
     if(user) done(null, user);
 });
@@ -35,6 +36,7 @@ passport.use(new DiscordStrategy({
         }
         else
         {
+            console.log("The specified user not found in local records...");
             const newUser = await DiscordUser.create({
                 discord_id: profile.id,
                 username: profile.username,
