@@ -6,6 +6,10 @@
         <title>Home Page</title>
     </head>
     <body>
-        <p>Yolo</p>
+        <ul>
+            <% users.forEach(user => { %>
+                <li><%= user.name %> - <%= user.email %></li>
+            <% }) %>
+        </ul>
     </body>
 </html>

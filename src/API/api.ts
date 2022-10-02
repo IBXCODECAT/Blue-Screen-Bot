@@ -54,6 +54,12 @@ export function API()
     });
 
     app.get('/home', (req: any, res: any) => {
-        res.status(200).render('home');
+        res.status(200).render('home', {
+            users: [
+                { "name": "bob", "email": "bob@example.com" },
+                { "name": "joe", "email": "joe@example.com" },
+                { "name": "ted", "email": "ted@example.com" },
+            ]
+        });
     });
 }
