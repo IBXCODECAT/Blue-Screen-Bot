@@ -13,7 +13,7 @@ function isAuthorized(req: any, res: any, next: any) {
 
 //This get function runs the isAuthorized middleware
 dashboard_route.get('/', isAuthorized, (req: any, res: any) => {
-    res.status(200).send(200);
+    res.status(200).render('dashboard');
 });
 
 export = dashboard_route;

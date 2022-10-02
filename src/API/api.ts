@@ -31,7 +31,7 @@ export function API()
         name: 'Discord.OAuth2' //This will name our session id cookie
     }))
 
-
+    app.use(express.static(join(__dirname, 'public')));
     app.use(passport.initialize());
     app.use(passport.session());
 
