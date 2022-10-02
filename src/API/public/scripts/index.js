@@ -1,13 +1,17 @@
-function DoExampleLoginWithCustomID(){
-    PlayFab.settings.titleId = document.getElementById("titleId").value;
+function LoginPlayFab()
+{
+    console.log("Hello");
+
+    PlayFab.settings.titleId = "D5AB4";
+    
     var loginRequest = {
         // Currently, you need to look up the required and optional keys for this object in the API reference for LoginWithCustomID. See the Request Headers and Request Body.
         TitleId: PlayFab.settings.titleId,
-        CustomId: document.getElementById("customId").value,
-        CreateAccount: true
+        Username: document.getElementById("username").value,
+        Password: document.getElementById("password").value
     };
 
-    PlayFabClientSDK.LoginWithCustomID(loginRequest, LoginCallback);
+    PlayFabClientSDK.LoginWithPlayFab(loginRequest, LoginCallback);
 }
 
 // callback functions take two parameters: result and error
