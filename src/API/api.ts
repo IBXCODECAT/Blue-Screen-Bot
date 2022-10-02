@@ -53,7 +53,7 @@ export function API()
         res.status(200).send(`You have requested the root URI from the Blue Screen Studios API on port ${PORT}.`);
     });
 
-    app.get('/home', (req: any, res: any) => {
+    app.get('/home', isAuthorized, (req: any, res: any) => {
         res.status(200).render('home', {
             users: [
                 { "name": "bob", "email": "bob@example.com" },
@@ -62,4 +62,15 @@ export function API()
             ]
         });
     });
+}
+
+//Middleware function to check authorization of discord user
+function isAuthorized(req: any, res: any, next: any) {
+    if(req.user) {
+        console.log(`User is logged in as ${req.user}`);
+        res.redirect('/dashboard'); //Go to the dashboard if already authorized
+    } else {
+        console.log('User is not logged in');
+        next();
+    }
 }
