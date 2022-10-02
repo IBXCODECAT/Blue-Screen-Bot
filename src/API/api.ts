@@ -10,8 +10,10 @@ const discord = require('./strategies/discordStrategy');
 
 const PORT = process.env.PORT || 8080; //Use env defined port or use 8080 (standard web server port)
 
-import db_connection = require('./database/db');
+import * as fs from 'fs';
+import { join } from 'path';
 
+import db_connection = require('./database/db');
 import auth_route = require("./routes/auth");
 import dashboard_route = require('./routes/dashboard');
 
@@ -37,6 +39,10 @@ export function API()
     app.use('/auth', auth_route);
     app.use('/dashboard', dashboard_route);
 
+    //Utilize the EJS view engine for front end HTML
+    app.set('view engine', 'ejs');
+    app.set('views', join(__dirname, 'views'));
+
     app.listen(
         PORT,
         () => console.log(`Express alive on http://localhost:${PORT}`)
@@ -45,5 +51,9 @@ export function API()
     //Data request
     app.get('/', (req: any, res: any) => {
         res.status(200).send(`You have requested the root URI from the Blue Screen Studios API on port ${PORT}.`);
+    });
+
+    app.get('/home', (req: any, res: any) => {
+        res.status(200).render('home');
     });
 }
