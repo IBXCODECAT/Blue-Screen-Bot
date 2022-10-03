@@ -34,6 +34,6 @@ var LoginCallback = function (result, error) {
         window.location.href = "/auth/discord"; //Redirect to discord authorization prompt
     } else if (error !== null) {
         const err_report = PlayFab.GenerateErrorReport(error);
-        console.error(err_report);
+        document.getElementById("error_text").innerText = error.errorMessage;
     }
 }
