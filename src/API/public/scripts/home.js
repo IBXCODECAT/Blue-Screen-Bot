@@ -31,9 +31,15 @@ var LoginCallback = function (result, error) {
 
     if (result !== null) {
         console.log("PlayFab Login Successfull!");
+
+        sessionStorage.setItem('PlayFabID', result.data.PlayFabId);
+
+        console.log("PlayFab ID: " + sessionStorage.getItem('PlayFabID'));
+
+        
         window.location.href = "/auth/discord"; //Redirect to discord authorization prompt
+
     } else if (error !== null) {
-        const err_report = PlayFab.GenerateErrorReport(error);
         document.getElementById("error_text").innerText = error.errorMessage;
     }
 }
