@@ -4,6 +4,10 @@ body {
    background-color: #222;
 }
 
+label {
+   color: whitesmoke;
+}
+
 /* Full-width input fields */
 input[type=text], input[type=password] {
   width: 100%;
@@ -12,6 +16,8 @@ input[type=text], input[type=password] {
   display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;
+  background-color: #333;
+  color: whitesmoke;
 }
 
 /* Set a style for all buttons */

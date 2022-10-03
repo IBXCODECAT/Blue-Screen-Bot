@@ -47,19 +47,18 @@ export function API()
         () => console.log(`Express alive on http://localhost:${PORT}`)
     );
     
-    //Data request
+    //Get requests
+
     app.get('/', (req: any, res: any) => {
+        res.redirect('home');
+    });
+
+    app.get('/debug', (req: any, res: any) => {
         res.status(200).send(`You have requested the root URI from the Blue Screen Studios API on port ${PORT}.`);
     });
 
     app.get('/home', isAuthorized, (req: any, res: any) => {
-        res.status(200).render('home', {
-            users: [
-                { "name": "bob", "email": "bob@example.com" },
-                { "name": "joe", "email": "joe@example.com" },
-                { "name": "ted", "email": "ted@example.com" },
-            ]
-        });
+        res.status(200).render('home');
     });
 
     app.get('/forbidden', (req: any, res: any) => {
