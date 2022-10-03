@@ -10,7 +10,6 @@ const discord = require('./strategies/discordStrategy');
 
 const PORT = process.env.PORT || 8080; //Use env defined port or use 8080 (standard web server port)
 
-import * as fs from 'fs';
 import { join } from 'path';
 
 import db_connection = require('./database/db');

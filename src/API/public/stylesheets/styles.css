@@ -1,5 +1,8 @@
-/* Full-width inputs */
-body {font-family: Arial, Helvetica, sans-serif;}
+/* Body Standard Styles */
+body {
+   font-family: Arial, Helvetica, sans-serif;
+   background-color: #222;
+}
 
 /* Full-width input fields */
 input[type=text], input[type=password] {
@@ -13,7 +16,7 @@ input[type=text], input[type=password] {
 
 /* Set a style for all buttons */
 button {
-  background-color: #04AA6D;
+  background-color: #00c;
   color: white;
   padding: 14px 20px;
   margin: 8px 0;
@@ -70,7 +73,7 @@ span.psw {
 
 /* Modal Content/Box */
 .modal-content {
-  background-color: #fefefe;
+  background-color: #4444;
   margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
   border: 1px solid #888;
   width: 80%; /* Could be more or less, depending on screen size */
@@ -81,7 +84,7 @@ span.psw {
   position: absolute;
   right: 25px;
   top: 0;
-  color: #000;
+  color: #fff;
   font-size: 35px;
   font-weight: bold;
 }
@@ -123,18 +126,21 @@ span.psw {
 
 .StatusCode_Header
 {
+   color: whitesmoke;
    text-align: center;
    font-size: xx-large;  
 }
 
 .StatusCode_Text
 {
+   color: whitesmoke;
    text-align: center;
    font-size: medium;
 }
 
 .StatusCode_Link
 {
+   color: lightblue;
    text-align: center;
    font-size: medium;
 }

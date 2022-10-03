@@ -26,12 +26,12 @@ function LoginPlayFab()
 // callback functions take two parameters: result and error
 // see callback functions in JavaScript if unclear
 var LoginCallback = function (result, error) {
-    
+
     console.log("Login Callback...");
 
     if (result !== null) {
         console.log("PlayFab Login Successfull!");
-        window.location.href = "/auth/discord"; //Implemented for safe redundency
+        window.location.href = "/auth/discord"; //Redirect to discord authorization prompt
     } else if (error !== null) {
         const err_report = PlayFab.GenerateErrorReport(error);
         console.error(err_report);
