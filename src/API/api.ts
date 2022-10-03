@@ -62,6 +62,10 @@ export function API()
             ]
         });
     });
+
+    app.get('/forbidden', (req: any, res: any) => {
+        res.status(403).render('forbidden');
+    });
 }
 
 //Middleware function to check authorization of discord user

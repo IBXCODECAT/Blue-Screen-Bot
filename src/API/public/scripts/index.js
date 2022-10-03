@@ -1,28 +1,24 @@
-function LoginPlayFab()
-{
-    console.log("Hello");
+//Set our Title ID so we know which game backend we are trying to update
+PlayFab.settings.titleId = "D5AB4";
 
-    PlayFab.settings.titleId = "D5AB4";
-    
-    var loginRequest = {
+
+function LinkAccountID()
+{
+    var linkRequest = {
+        
         // Currently, you need to look up the required and optional keys for this object in the API reference for LoginWithCustomID. See the Request Headers and Request Body.
-        TitleId: PlayFab.settings.titleId,
-        Username: document.getElementById("username").value,
-        Password: document.getElementById("password").value
+        CustomId: "test",
+        ForceLink: true
     };
 
-    PlayFabClientSDK.LoginWithPlayFab(loginRequest, LoginCallback);
+    PlayFabClientSDK.LinkCustomID(linkRequest, LinkingCallback);
 }
 
-// callback functions take two parameters: result and error
-// see callback functions in JavaScript if unclear
-var LoginCallback = function (result, error) {
-    if (result !== null) {
-        document.getElementById("resultOutput").innerHTML = "Success!";
+var LinkingCallback = function (result, error) {
+    if(result !== null) {
+
     } else if (error !== null) {
-        document.getElementById("resultOutput").innerHTML =
-            "Something went wrong with your API call.\n" +
-            "Here's some debug information:\n" +
-            PlayFab.GenerateErrorReport(error);
+        var error = PlayFab.GenerateErrorReport(error);
+        console.error(error);
     }
 }
