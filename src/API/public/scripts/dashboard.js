@@ -1,18 +1,9 @@
 const playfabID = sessionStorage.getItem("PlayFabID");
-var discord_id = null;
-
-const http = new XMLHttpRequest();
-const url = "/res/discord_id";
-http.open("GET", url);
-http.send();
+const discord_id = "TEST_ID";
 
 console.log("Player ID: " + playfabID);
 console.log("Discord ID: " + discord_id);
 
-http.onreadystatechange = (e) => {
-    discord_id = http.response;
-    console.log(http.response);
-}
 
 function LinkAccountID()
 {
@@ -23,7 +14,15 @@ function LinkAccountID()
         ForceLink: true
     };
 
-    PlayFabClientSDK.LinkCustomID(linkRequest, LinkingCallback);
+    try
+    {
+        
+        PlayFabClientSDK.LinkCustomID(linkRequest, LinkingCallback);
+    }
+    catch (res)
+    {
+        console.error("There was a problem calling this method.. " + res)
+    }
 }
 
 var LinkingCallback = function (result, error) {
@@ -32,5 +31,6 @@ var LinkingCallback = function (result, error) {
     } else if (error !== null) {
         var error = PlayFab.GenerateErrorReport(error);
         console.error(error);
+        console.log("I Ran!");
     }
 }
