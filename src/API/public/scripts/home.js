@@ -37,7 +37,7 @@ var LoginCallback = function (result, error) {
         console.log("PlayFab ID: " + sessionStorage.getItem('PlayFabID'));
 
         
-        window.location.href = "/auth/discord"; //Redirect to discord authorization prompt
+        //window.location.href = "/auth/discord"; //Redirect to discord authorization prompt
 
     } else if (error !== null) {
         document.getElementById("error_text").innerText = error.errorMessage;
