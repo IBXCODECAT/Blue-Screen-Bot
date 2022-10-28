@@ -1,6 +1,6 @@
 import { Client } from 'discord.js';
-import { API } from './API/api'
 import { config } from 'dotenv';
+import { Discord } from './Discord/discord'
 
 config();
 
@@ -8,5 +8,4 @@ const discordClient = new Client({
     intents: []
 });
 
-//Discord(discordClient)
-API()
+Discord(discordClient)

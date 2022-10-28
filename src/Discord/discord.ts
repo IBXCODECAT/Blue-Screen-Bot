@@ -3,7 +3,6 @@
 import { Client } from 'discord.js';
 import { config } from 'dotenv';
 import * as fs from 'fs';
-import { API } from '../API/api';
 
 //Configure dotenv
 config();
