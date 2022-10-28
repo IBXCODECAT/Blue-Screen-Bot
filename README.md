@@ -1,2 +1,2 @@
-# Discord-Integration
-This repository contains the code for our Discord Integration tool.
+# Blue Screen Bot
+This repository contains the code for Blue Screen Bot
