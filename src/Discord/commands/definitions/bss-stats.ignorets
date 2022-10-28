@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType } from "discord.js";
 export = {
     name: "bss-stats",
     adminOnly: false,
-    description: "I will reply with some statstics pulled from the Blue Screen Studios API!",
+    description: "I will reply with statstics pulled from the Blue Screen Studios API!",
     options: [
         {
             name: "table",
