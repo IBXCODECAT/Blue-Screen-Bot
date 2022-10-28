@@ -32,6 +32,8 @@ export async function RegisterCommands(client: Client)
     //For each command file, load the module and create the commands using the propreties defined in the command definition
     for(const command of commandDefs)
     {
+        console.log("Creating Command: " + command.name);
+        
         await commands?.create({
             name: command.name,
             description: command.description,

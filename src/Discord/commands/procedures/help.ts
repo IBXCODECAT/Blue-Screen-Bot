@@ -8,8 +8,7 @@ export async function Run(client:Client, interaction: Interaction) {
 
     const commands: Array<CommandDefinition> = GetDiscordCommandDefinitions();
 
-    let messageContent: string = "I provide Rich presence data for players. I also verify Discord information for the in-game cosmetic" +
-    " systems.\n\nTry my commands:\n\n"
+    let messageContent: string = "Here is a list of commands:\n\n";
     
     commands.forEach( (command) => {
         messageContent += `</${command.name}:0> - ${command.description}\n`;
