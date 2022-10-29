@@ -1,7 +1,7 @@
 export interface CommandDefinition
 {
     name: string;
-    adminOnly: boolean;
+    global: boolean;
     description: string;
     options: any;
     procedure: string;

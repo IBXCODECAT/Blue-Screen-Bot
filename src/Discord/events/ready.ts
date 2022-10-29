@@ -1,6 +1,6 @@
 import { Client } from 'discord.js'
 import { DeleteCommands } from '../scripts/deleteCommands';
-import { RegisterCommands } from './../scripts/commands';
+import { RegisterBSSCommands, RegisterCommands } from './../scripts/commands';
 
 export = {
     name: 'ready',
@@ -11,6 +11,7 @@ export = {
     {
         console.log(`Discord Client [${client.application?.id}] is ready!`);
         
+        //egisterBSSCommands(client); //Call this functiomn to register all non-global commands!
         //RegisterCommands(client); //Call this function to register all global commands!
         //DeleteCommands(); //Call this function to delete all global commands
     }

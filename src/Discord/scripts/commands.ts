@@ -9,6 +9,41 @@ import { GetDiscordCommandDefinitions, GetDiscordProcedureFiles, ModuleFileExten
 const commandDefs: Array<CommandDefinition> = GetDiscordCommandDefinitions();
 const procedures = GetDiscordProcedureFiles();
 
+export async function RegisterBSSCommands(client: Client) 
+{
+    //Leave guildID empty to register commands across all servers (this process can take about 2 hours)
+    const guildID = '888875214459535360'; //BSS = 888875214459535360 | Staff = 913885055598886922
+    const guild = client.guilds.cache.get(guildID); //Get the guild to register our commands in from our clients cache of joined guilds
+    let commands; //Create our commands object to hold our command data
+
+    //Do we have a guild specified?
+    if(guild) 
+    {
+        //If so let's register the commands in there
+        commands = guild.commands;
+        console.log(`Registering Commands in the ${guild?.name} GUILD!`);
+    }
+    else
+    {
+        console.log("No GUILD was specified to register BSS commands in");
+    }
+
+    //For each command file, load the module and create the commands using the propreties defined in the command definition
+    for(const command of commandDefs)
+    {
+        console.log("Creating Command: " + command.name);
+        
+        if(!command.global)
+        {
+            await commands?.create({
+                name: command.name,
+                description: command.description,
+                options: command.options,
+            });
+        }
+    }
+}
+
 export async function RegisterCommands(client: Client)
 {
     //Leave guildID empty to register commands across all servers (this process can take about 2 hours)
@@ -34,11 +69,14 @@ export async function RegisterCommands(client: Client)
     {
         console.log("Creating Command: " + command.name);
         
-        await commands?.create({
-            name: command.name,
-            description: command.description,
-            options: command.options,
-        })
+        if(command.global)
+        {
+            await commands?.create({
+                name: command.name,
+                description: command.description,
+                options: command.options,
+            });
+        }
     }
 }
 

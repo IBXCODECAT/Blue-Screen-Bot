@@ -1,6 +1,6 @@
 export = {
     name: "advice",
-    adminOnly: false,
+    global: true,
     description: "Let me give you some helpful advice!",
     options: undefined,
     procedure: "advice"

@@ -11,12 +11,18 @@ export async function Run(client:Client, interaction: Interaction) {
 
     let messageContent: string = "Here is the link to the bot support server:\n\n";
 
+    if(!interaction.replied)
+    {    
+        await interaction.deferReply({
+            ephemeral: true
+        });
+    }
+
     const data = await GET("https://discord.com/api/guilds/888875214459535360/widget.json");
 
     messageContent += JSON.parse(data).instant_invite;
 
-    interaction.reply({
-        content: messageContent,
-        ephemeral: true
+    interaction.editReply({
+        content: messageContent
     })
 }
