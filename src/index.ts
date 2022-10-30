@@ -6,7 +6,8 @@ config();
 
 const discordClient = new Client({
     intents: [
-        IntentsBitField.Flags.GuildMembers
+        IntentsBitField.Flags.GuildMembers,
+        IntentsBitField.Flags.GuildPresences
     ] 
 });
 
