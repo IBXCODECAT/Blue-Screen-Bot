@@ -6,36 +6,33 @@ import { CommandDefinition } from "../Discord/commands/interfaces/commandDefinit
 export const ModuleFileExtension = '.ts';
 
 //This is the path to the command definitions & procedures directories
-const commandDefsPath = './../Discord/commands/definitions/'
-const proceduresPath = './../Discord/commands/procedures/'
+const commandDefsPath = `${process.cwd()}/src/Discord/commands/definitions/`
+const proceduresPath = `${process.cwd()}/src/Discord/commands/procedures/`
 
-export function GetDiscordCommandDefinitions(): Array<CommandDefinition>
-{
-    //Fetch a list of all command definitions in the command definitions directory
-    const commandDefinitionFiles = fs.readdirSync(__dirname + commandDefsPath).filter((file: string) => file.endsWith(ModuleFileExtension));
-    
-    //Create a new array to return with our command definitons
-    var commandDefinitions: Array<CommandDefinition> = new Array<CommandDefinition>;
+export function GetDiscordCommandDefinitions(): Array<CommandDefinition> {
+  //Fetch a list of all command definitions in the command definitions directory
+  const commandDefinitionFiles = fs.readdirSync(commandDefsPath).filter((file: string) => file.endsWith(ModuleFileExtension));
 
-    //For each file in our command definition files...
-    for(const file of commandDefinitionFiles)
-    {
-        const module: string = file.substring(0, file.length - 3);
-        const m_command: CommandDefinition = require(`${commandDefsPath}${module}`);
+  //Create a new array to return with our command definitons
+  var commandDefinitions: Array<CommandDefinition> = new Array<CommandDefinition>;
 
-        //Add the command definition onto the end of the array
-        commandDefinitions.push(m_command);
+  //For each file in our command definition files...
+  for (const file of commandDefinitionFiles) {
+    const module: string = file.substring(0, file.length - 3);
+    const m_command: CommandDefinition = require(`${commandDefsPath}${module}`);
 
-        console.log(`FILESYSTEM: Loaded command definition: ${m_command.name}`);
-    }
+    //Add the command definition onto the end of the array
+    commandDefinitions.push(m_command);
 
-    return commandDefinitions;
+    console.log(`FILESYSTEM: Loaded command definition: ${m_command.name}`);
+  }
+
+  return commandDefinitions;
 }
 
-export function GetDiscordProcedureFiles(): Array<string>
-{
-    //Fetch a list of all command definitions in the command procedures directory
-    const procedureFiles = fs.readdirSync(__dirname + proceduresPath).filter((file: string) => file.endsWith(ModuleFileExtension));
+export function GetDiscordProcedureFiles(): Array<string> {
+  //Fetch a list of all command definitions in the command procedures directory
+  const procedureFiles = fs.readdirSync(proceduresPath).filter((file: string) => file.endsWith(ModuleFileExtension));
 
-    return procedureFiles;
+  return procedureFiles;
 }
