@@ -12,7 +12,9 @@ export = {
     {
         if(member.guild.id == guild)
         {
-            member.send(`Hello <@${member.user?.id}>! We are so glad you are have joined our gaming community!
+            try
+            {
+                member.send(`Hello <@${member.user?.id}>! We are so glad you are have joined our gaming community!
 
 Here are a few important channels that you should check out!
 
@@ -23,6 +25,12 @@ Here are a few important channels that you should check out!
 The Blue Screen Studios server is owned and operated by the game developers at Blue Screen Studios. If you ever have any questions about anything, please feel free to ask! We hope you enjoy it here!
             
 *I am a bot, and this message was automated...*`);
+            }
+            catch
+            {
+                console.log("Unable to DM User");
+            }
+
             
             const channel = await client.channels.fetch(log);
             (channel as TextChannel).send(`**Member Join:** <@${member.user.id}> [${member.user.id}]`);
