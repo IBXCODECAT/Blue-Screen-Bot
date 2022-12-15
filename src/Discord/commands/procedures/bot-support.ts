@@ -1,13 +1,13 @@
 import { Client, Interaction } from "discord.js";
 import { GetDiscordCommandDefinitions } from "../../../scripts/filesystem";
 import { GET } from "../../scripts/webrequest";
-import { CommandDefinition } from "../interfaces/commandDefinition";
+import { ISlashCommand } from "../interfaces/slashCommand";
 
 export async function Run(client:Client, interaction: Interaction) {
     
     if(!interaction.isCommand()) return;
 
-    const commands: Array<CommandDefinition> = GetDiscordCommandDefinitions();
+    const commands: Array<ISlashCommand> = GetDiscordCommandDefinitions();
 
     let messageContent: string = "Here is the link to the bot support server:\n\n";
 

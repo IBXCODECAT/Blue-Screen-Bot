@@ -1,5 +1,5 @@
 import { Client, Interaction } from "discord.js";
-import { HandleCommands } from "../scripts/commands";
+import { HandleInteractions } from "../scripts/commands";
 //import { HandleCommands } from "../components/commands";
 
 export = {
@@ -9,6 +9,6 @@ export = {
 
     async execute(client: Client, interaction: Interaction)
     {
-        HandleCommands(client, interaction);
+        HandleInteractions(client, interaction);
     }
 }
