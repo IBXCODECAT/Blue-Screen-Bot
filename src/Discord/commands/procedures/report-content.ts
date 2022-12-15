@@ -44,7 +44,7 @@ export async function Run(client:Client, interaction: Interaction) {
             ephemeral: true
         });
 
-        const channel = await client.channels.fetch("988750735674052628");
+        const channel = await client.channels.fetch("1036100327864287284");
         (channel as TextChannel).send(`
         \r${toBold("New Message report")}
         \rReporter: ${interaction.user}
