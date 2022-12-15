@@ -1,94 +1,98 @@
-import { Client, Interaction } from "discord.js";
-import { FgCyan, FgGreen, FgRed, FgWhite, FgYellow } from "../../scripts/consoleFormatting";
+import { Client, Interaction, InteractionCollector } from "discord.js";
+import { FgBlue, FgCyan, FgGreen, FgRed, FgWhite, FgYellow } from "../../scripts/consoleFormatting";
 import { ISlashCommand } from "../commands/interfaces/slashCommand";
 import { toErrorBlock } from "./messageFormatting";
 
-import { GetDiscordCommandDefinitions, GetDiscordProcedureFiles, ModuleFileExtension } from "../../scripts/filesystem";
-import { IMessageContextCommand as IContextCommand } from "../commands/interfaces/messageContextCommand";
+import { GetSlashCommandDefinitions, GetDiscordProcedureFiles, ModuleFileExtension, GetMessageContextCommandDefinitions } from "../../scripts/filesystem";
+import { IMessageContextCommand as IContextCommand, IMessageContextCommand } from "../commands/interfaces/messageContextCommand";
 
+const slashCommandDefs: Array<ISlashCommand> = GetSlashCommandDefinitions();
+const messageCommandDefs: Array<IMessageContextCommand> = GetMessageContextCommandDefinitions();
 
-const commandDefs: Array<ISlashCommand> = GetDiscordCommandDefinitions();
 const procedures = GetDiscordProcedureFiles();
 
-export async function RegisterBSSCommands(client: Client) 
-{
-    //Leave guildID empty to register commands across all servers (this process can take about 2 hours)
-    const guildID = '888875214459535360'; //BSS = 888875214459535360 | Staff = 913885055598886922
-    const guild = client.guilds.cache.get(guildID); //Get the guild to register our commands in from our clients cache of joined guilds
-    let commands; //Create our commands object to hold our command data
-
-    //Do we have a guild specified?
-    if(guild) 
-    {
-        //If so let's register the commands in there
-        commands = guild.commands;
-        console.log(`Registering Commands in the ${guild?.name} GUILD!`);
-    }
-    else
-    {
-        console.log("No GUILD was specified to register BSS commands in");
-    }
-
-    //For each command file, load the module and create the commands using the propreties defined in the command definition
-    for(const command of commandDefs)
-    {
-        console.log("Creating Command: " + command.name);
-        
-        if(!command.global)
-        {
-            await commands?.create({
-                name: command.name,
-                description: command.description,
-                options: command.options,
-            });
-        }
-    }
-}
-
-export async function RegisterCommands(client: Client)
+export async function RegisterSlashCommands(client: Client) 
 {
     //Leave guildID empty to register commands across all servers (this process can take about 2 hours)
     const guildID = process.env.DEV_SERVER_ID!.toString(); //BSS = 888875214459535360 | Staff = 913885055598886922
     const guild = client.guilds.cache.get(guildID); //Get the guild to register our commands in from our clients cache of joined guilds
-    let commands; //Create our commands object to hold our command data
+    
+    let globalCommands;
+    let localCommands; 
 
-    //Do we have a guild specified?
-    if(guild) 
-    {
-        //If so let's register the commands in there
-        commands = guild.commands;
-        console.log(FgYellow + `Registering Commands in the ${guild?.name} GUILD!`);
-    } 
-    else
-    {
-        console.log("==========================");
-        //Otherwise we will register them globally across all servers (this process can take about 2 hours)
-        commands = client.application?.commands;
-    }
+    globalCommands = client.application?.commands;
+    localCommands = guild?.commands;
 
-    //For each command file, load the module and create the commands using the propreties defined in the command definition
-    for(const command of commandDefs)
-    {   
+    //For each slash command definition file, load the module and register the commands
+    for(const command of slashCommandDefs)
+    {
         if(command.global)
-        {
-            await commands?.create({
+        { 
+            console.log(`${FgGreen}Creating global slash command: ${command.name}${FgWhite}`);
+
+            await globalCommands?.create({
                 name: command.name,
                 type: command.type,
                 description: command.description || undefined,
                 options: command.options || undefined
             });
+        }
+        else
+        {
+            console.log(`${FgBlue}Creating local slash command: ${command.name}${FgWhite}`)
 
-            console.log(`Created ${command.name}`)
+            await localCommands?.create({
+                name: command.name,
+                type: command.type,
+                description: command.description || undefined,
+                options: command.options || undefined
+            });
+        }
+    }
+
+    //Do the same thing as before, but this time for our message context commandds
+    for(const command of messageCommandDefs)
+    {
+        if(command.global)
+        { 
+            console.log(`${FgGreen}Creating global message context command: ${command.name}${FgWhite}`);
+
+            await globalCommands?.create({
+                name: command.name,
+                type: command.type
+            });
+        }
+        else
+        {
+            console.log(`${FgBlue}Creating local message context command: ${command.name}${FgWhite}`)
+
+            await localCommands?.create({
+                name: command.name,
+                type: command.type
+            });
         }
     }
 }
 
+
 export async function HandleInteractions(client: Client, interaction: Interaction)
 {
+    let executionProcedure: string = "";
+
+    if(interaction.isModalSubmit())
+    {
+        const executionProcedure = interaction.customId;
+
+        //Find the procedure for this command interaction
+        const path = "./../commands/procedures/";
+        const procedure = require(`${path}${executionProcedure}`);
+
+        //Run the procedure
+        procedure.Run(client, interaction);
+    }
+
     //Is our interaction a command varient? If it is not, return.
     if(!interaction.isCommand() && !interaction.isContextMenuCommand()) return;
-    
-    let executionProcedure: string = "";
 
     if(interaction.isCommand())
     {
@@ -98,7 +102,7 @@ export async function HandleInteractions(client: Client, interaction: Interactio
 
 
         //For each slash command definiton in our list of definitions...
-        for(const command of commandDefs)
+        for(const command of slashCommandDefs)
         {
             //If the slash command defintion name matches this command's name...
             if(command.name == thisCommandName)
@@ -113,10 +117,22 @@ export async function HandleInteractions(client: Client, interaction: Interactio
         if(executionProcedure == undefined || executionProcedure == null) return;
     }
 
-    if(interaction.isContextMenuCommand())
+    if(interaction.isMessageContextMenuCommand())
     {
         const { commandName: thisCommandName } = interaction;
         let thisCommandDefinition: IContextCommand;
+
+        //For each slash command definiton in our list of definitions...
+        for(const command of messageCommandDefs)
+        {
+            //If the slash command defintion name matches this command's name...
+            if(command.name == thisCommandName)
+            {
+                //Set this slash command definiton to the command definition we found
+                thisCommandDefinition = command;
+                executionProcedure = thisCommandDefinition?.procedure;
+            }
+        }
     }
 
     //Find the procedure for this command interaction

@@ -1,5 +1,5 @@
 import { Client, Interaction } from "discord.js";
-import { GetDiscordCommandDefinitions } from "../../../scripts/filesystem";
+import { GetSlashCommandDefinitions } from "../../../scripts/filesystem";
 import { ISlashCommand } from "../interfaces/slashCommand";
 import { GET } from './../../scripts/webrequest';
 
@@ -7,7 +7,7 @@ export async function Run(client:Client, interaction: Interaction) {
     
     if(!interaction.isCommand()) return;
 
-    const commands: Array<ISlashCommand> = GetDiscordCommandDefinitions();
+    const commands: Array<ISlashCommand> = GetSlashCommandDefinitions();
 
     let messageContent: string = "Here is some advice:\n\n";
     

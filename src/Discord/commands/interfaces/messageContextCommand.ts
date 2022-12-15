@@ -4,7 +4,7 @@ export interface IMessageContextCommand
     global: boolean;
     type: number;
 
-    description: string;
+    helpMessageDescription: string;
 
     procedure: string;
 }

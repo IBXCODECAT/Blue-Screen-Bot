@@ -1,4 +1,6 @@
+import { InteractionType } from 'discord.js';
 import * as fs from 'fs';
+import { IMessageContextCommand } from '../Discord/commands/interfaces/messageContextCommand';
 
 import { ISlashCommand } from "../Discord/commands/interfaces/slashCommand";
 
@@ -9,22 +11,49 @@ export const ModuleFileExtension = '.ts';
 const commandDefsPath = `${process.cwd()}/src/Discord/commands/definitions/`
 const proceduresPath = `${process.cwd()}/src/Discord/commands/procedures/`
 
-export function GetDiscordCommandDefinitions(): Array<ISlashCommand> {
+export function GetSlashCommandDefinitions(): Array<ISlashCommand> {
   //Fetch a list of all command definitions in the command definitions directory
   const commandDefinitionFiles = fs.readdirSync(commandDefsPath).filter((file: string) => file.endsWith(ModuleFileExtension));
 
   //Create a new array to return with our command definitons
-  var commandDefinitions: Array<ISlashCommand> = new Array<ISlashCommand>;
+  let commandDefinitions: Array<ISlashCommand> = new Array<ISlashCommand>;
 
   //For each file in our command definition files...
   for (const file of commandDefinitionFiles) {
     const module: string = file.substring(0, file.length - 3);
     const m_command: ISlashCommand = require(`${commandDefsPath}${module}`);
 
-    //Add the command definition onto the end of the array
-    commandDefinitions.push(m_command);
+    //Is this command a slash command?
+    if(m_command.type == InteractionType.Ping)
+    {
+      //Add the command definition onto the end of the array
+      commandDefinitions.push(m_command);
+      console.log(`FILESYSTEM: Loaded slash command definition: ${m_command.name}`);
+    }
+  }
 
-    console.log(`FILESYSTEM: Loaded command definition: ${m_command.name}`);
+  return commandDefinitions;
+}
+
+export function GetMessageContextCommandDefinitions(): Array<IMessageContextCommand> {
+  //Fetch a list of all command definitions in the command definitions directory
+  const commandDefinitionFiles = fs.readdirSync(commandDefsPath).filter((file: string) => file.endsWith(ModuleFileExtension));
+
+  //Create a new array to return with our command definitons
+  let commandDefinitions: Array<IMessageContextCommand> = new Array<IMessageContextCommand>;
+
+  //For each file in our command definition files...
+  for (const file of commandDefinitionFiles) {
+    const module: string = file.substring(0, file.length - 3);
+    const m_command: IMessageContextCommand = require(`${commandDefsPath}${module}`);
+
+    //Is this commmand a message context command?
+    if(m_command.type == InteractionType.MessageComponent)
+    {
+      //Add the command definition onto the end of the array
+      commandDefinitions.push(m_command);
+      console.log(`FILESYSTEM: Loaded context command definition: ${m_command.name}`);
+    }
   }
 
   return commandDefinitions;

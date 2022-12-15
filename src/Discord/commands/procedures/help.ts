@@ -1,28 +1,42 @@
-import { Client, Interaction } from "discord.js";
-import { GetDiscordCommandDefinitions } from "../../../scripts/filesystem";
+import { Client, Interaction, InteractionType } from "discord.js";
+import { GetMessageContextCommandDefinitions, GetSlashCommandDefinitions } from "../../../scripts/filesystem";
 import { ISlashCommand } from "../interfaces/slashCommand";
+import { toBold, toUnderline } from "../../scripts/messageFormatting";
+import { IMessageContextCommand } from "../interfaces/messageContextCommand";
 
 export async function Run(client:Client, interaction: Interaction) {
     
-    if(!interaction.isCommand()) return;
+    if(!interaction.isCommand() && !interaction.isContextMenuCommand()) return;
 
-    const commands: Array<ISlashCommand> = GetDiscordCommandDefinitions();
+    const slashCOmmands: Array<ISlashCommand> = GetSlashCommandDefinitions();
+    const contextCommands: Array<IMessageContextCommand> = GetMessageContextCommandDefinitions();
+    let messageContent: string;
 
-    let messageContent: string = "Here is a list of commands:\n\n";
+    messageContent = `\n${toBold("Here is a list of slash commands:")}\n`;
     
-    commands.forEach( (command) => {
+    slashCOmmands.forEach((command) => {
         if(command.global)
         {
             messageContent += `</${command.name}:0> - ${command.description}\n`;
         }
         else
         {
-            if(interaction.guild?.id == process.env.BSS_GUILD)
-            {
-                messageContent += `</${command.name}:0> - (This server only) - ${command.description}\n`;
-            }
+            messageContent += `</${command.name}:0> - ${command.description} (this server onlye)\n`;
         }
-    })
+    });
+
+    messageContent += `\n${toBold("Here is a list of context menu options (right click message):")}\n`;
+
+    contextCommands.forEach((command) => {
+        if(command.global)
+        {
+            messageContent += `${toUnderline(command.name)} - ${command.helpMessageDescription}\n`;
+        }
+        else
+        {
+            messageContent += `${toUnderline(command.name)} - ${command.helpMessageDescription} (this server only)\n`;
+        }
+    });
 
     interaction.reply({
         content: messageContent,
