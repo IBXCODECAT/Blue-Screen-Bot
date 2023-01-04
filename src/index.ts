@@ -6,9 +6,11 @@ config();
 
 const discordClient = new Client({
     intents: [
-        IntentsBitField.Flags.GuildMembers,
-        IntentsBitField.Flags.GuildPresences
+        IntentsBitField.Flags.GuildMembers
     ] 
 });
+
+//discordClient.on('debug', console.log);
+discordClient.on('warn', console.log);
 
 Discord(discordClient)

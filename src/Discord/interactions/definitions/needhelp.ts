@@ -7,5 +7,5 @@ export = {
     
     helpMessageDescription: "I will reply with a list of commands and thier use!",
     
-    procedure: "help"
+    executes: "help"
 }

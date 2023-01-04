@@ -1,15 +1,15 @@
 import { InteractionType } from 'discord.js';
 import * as fs from 'fs';
-import { IMessageContextCommand } from '../Discord/commands/interfaces/messageContextCommand';
+import { IMessageContextCommand } from '../Discord/interactions/interfaces/contextCommand';
 
-import { ISlashCommand } from "../Discord/commands/interfaces/slashCommand";
+import { ISlashCommand } from "../Discord/interactions/interfaces/slashCommand";
 
 //The extension to use when searching the file system (ts for ts-node, js for js-node)
 export const ModuleFileExtension = '.ts';
 
 //This is the path to the command definitions & procedures directories
-const commandDefsPath = `${process.cwd()}/src/Discord/commands/definitions/`
-const proceduresPath = `${process.cwd()}/src/Discord/commands/procedures/`
+const commandDefsPath = `${process.cwd()}/src/Discord/interactions/definitions/`
+const proceduresPath = `${process.cwd()}/src/Discord/interactions/procedures/`
 
 export function GetSlashCommandDefinitions(): Array<ISlashCommand> {
   //Fetch a list of all command definitions in the command definitions directory
