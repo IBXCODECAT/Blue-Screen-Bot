@@ -9,7 +9,6 @@ export const ModuleFileExtension = '.ts';
 
 //This is the path to the command definitions & procedures directories
 const commandDefsPath = `${process.cwd()}/src/Discord/interactions/definitions/`
-const proceduresPath = `${process.cwd()}/src/Discord/interactions/procedures/`
 
 export function GetSlashCommandDefinitions(): Array<ISlashCommand> {
   //Fetch a list of all command definitions in the command definitions directory
@@ -57,11 +56,4 @@ export function GetMessageContextCommandDefinitions(): Array<IMessageContextComm
   }
 
   return commandDefinitions;
-}
-
-export function GetDiscordProcedureFiles(): Array<string> {
-  //Fetch a list of all command definitions in the command procedures directory
-  const procedureFiles = fs.readdirSync(proceduresPath).filter((file: string) => file.endsWith(ModuleFileExtension));
-
-  return procedureFiles;
 }

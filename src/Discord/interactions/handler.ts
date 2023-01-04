@@ -1,5 +1,6 @@
 import { Client, Interaction, REST, Routes } from "discord.js";
 import { GetMessageContextCommandDefinitions as GetContextCommandDefinitions, GetSlashCommandDefinitions } from "../../scripts/filesystem";
+import { CheckClientPermissions } from "../scripts/permissions";
 import { IMessageContextCommand as IContextCommand } from "./interfaces/contextCommand";
 import { ISlashCommand } from "./interfaces/slashCommand";
 
@@ -58,7 +59,18 @@ export async function HandleInteraction(client: Client, interaction: Interaction
             }
         }
 
-        executablePath.Run(client, interaction);
+        if(CheckClientPermissions(client, interaction.guild))
+        {
+            executablePath.Run(client, interaction);
+        }
+        else
+        {
+            await interaction.reply({
+                content: "I can not respond to interactions until the following permissions are enabled for me:\n" +
+                "MANAGE_WEBHOOKS, SEND MESSAGES, EMBED_LINKS",
+                ephemeral: true
+            });
+        }
 
     }
 

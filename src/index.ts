@@ -6,6 +6,7 @@ config();
 
 const discordClient = new Client({
     intents: [
+        IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMembers
     ] 
 });
