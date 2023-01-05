@@ -13,6 +13,7 @@ export async function Run(client: Client, interaction: Interaction) {
     
     const slashCOmmands: Array<ISlashCommand> = GetSlashCommandDefinitions();
     const contextCommands: Array<IMessageContextCommand> = GetMessageContextCommandDefinitions();
+    
     let messageContent: string;
 
     messageContent = `\n${toBold("Here is a list of slash commands:")}\n`;

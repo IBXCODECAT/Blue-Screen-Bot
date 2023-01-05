@@ -1,6 +1,6 @@
-import { Client, Interaction, REST, Routes } from "discord.js";
+import { Client, EmbedBuilder, Interaction, PermissionsBitField, REST, Routes } from "discord.js";
 import { GetMessageContextCommandDefinitions as GetContextCommandDefinitions, GetSlashCommandDefinitions } from "../../scripts/filesystem";
-import { CheckClientPermissions } from "../scripts/permissions";
+import { CheckClientPermissions, PermissionCheck } from "../scripts/permissions";
 import { IMessageContextCommand as IContextCommand } from "./interfaces/contextCommand";
 import { ISlashCommand } from "./interfaces/slashCommand";
 
@@ -65,9 +65,18 @@ export async function HandleInteraction(client: Client, interaction: Interaction
         }
         else
         {
+            let manageServerText: string;
+            const embed = new EmbedBuilder()
+                .setColor(0xFF0000)
+                .setTitle("Error | Permissions Required")
+                .setDescription("I require all of the following permissions to function properly. Please grant me all of the following permissions:")
+                .addFields(
+                    { name: "MANAGE_SERVER", value: `${PermissionCheck(client, interaction.guild, PermissionsBitField.Flags.ManageGuild)}` },
+                    { name: "MANAGE_WEBHOOKS", value: `${PermissionCheck(client, interaction.guild, PermissionsBitField.Flags.ManageWebhooks)}`},
+                    { name: "SEND_MESSAGES", value: `${PermissionCheck(client, interaction.guild, PermissionsBitField.Flags.SendMessages)}`},
+                    { name: "EMBED_LINKS", value: `${PermissionCheck(client, interaction.guild, PermissionsBitField.Flags.EmbedLinks)}`})
             await interaction.reply({
-                content: "I can not respond to interactions until the following permissions are enabled for me:\n" +
-                "MANAGE_WEBHOOKS, SEND MESSAGES, EMBED_LINKS",
+                embeds: [embed],
                 ephemeral: true
             });
         }
