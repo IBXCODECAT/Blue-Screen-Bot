@@ -1,43 +1,34 @@
-import { Client, Interaction, InteractionType } from "discord.js";
+import { Client, Guild, Interaction, InteractionType } from "discord.js";
 import { GetMessageContextCommandDefinitions, GetSlashCommandDefinitions } from "../../../scripts/filesystem";
 import { ISlashCommand } from "../interfaces/slashCommand";
 import { toBold, toUnderline } from "../../scripts/messageFormatting";
-import { IMessageContextCommand } from "../interfaces/messageContextCommand";
+import { IMessageContextCommand } from "../interfaces/contextCommand";
+//import { CheckClientPermissions } from "../../scripts/permissions";
 
-export async function Run(client:Client, interaction: Interaction) {
+export async function Run(client: Client, interaction: Interaction) {
     
     if(!interaction.isCommand() && !interaction.isContextMenuCommand()) return;
 
+    console.log(interaction.guild);
+    
     const slashCOmmands: Array<ISlashCommand> = GetSlashCommandDefinitions();
     const contextCommands: Array<IMessageContextCommand> = GetMessageContextCommandDefinitions();
+    
     let messageContent: string;
 
     messageContent = `\n${toBold("Here is a list of slash commands:")}\n`;
     
     slashCOmmands.forEach((command) => {
-        if(command.global)
-        {
-            messageContent += `</${command.name}:0> - ${command.description}\n`;
-        }
-        else
-        {
-            messageContent += `</${command.name}:0> - ${command.description} (this server onlye)\n`;
-        }
+        messageContent += `</${command.name}:0> - ${command.description}\n`;
     });
 
     messageContent += `\n${toBold("Here is a list of context menu options (right click message):")}\n`;
 
     contextCommands.forEach((command) => {
-        if(command.global)
-        {
-            messageContent += `${toUnderline(command.name)} - ${command.helpMessageDescription}\n`;
-        }
-        else
-        {
-            messageContent += `${toUnderline(command.name)} - ${command.helpMessageDescription} (this server only)\n`;
-        }
+        messageContent += `${toUnderline(command.name)} - ${command.helpMessageDescription}\n`;
     });
 
+    messageContent += `\nNOTE: Blue Bot is far from being released and functionality is limited. Join https://discord.gg/Zy5uXQUZXx to test features early!`
     interaction.reply({
         content: messageContent,
         ephemeral: true

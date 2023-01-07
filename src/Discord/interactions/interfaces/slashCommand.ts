@@ -6,5 +6,5 @@ export interface ISlashCommand
     description: string;
     
     options: any;
-    procedure: string;
+    executes: string;
 }

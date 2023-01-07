@@ -7,5 +7,5 @@ export = {
 
     helpMessageDescription: "Report content to the moderators of the server",
 
-    procedure: "report-content"
+    executes: "report-content"
 }

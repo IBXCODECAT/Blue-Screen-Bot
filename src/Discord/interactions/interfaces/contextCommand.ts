@@ -6,5 +6,5 @@ export interface IMessageContextCommand
 
     helpMessageDescription: string;
 
-    procedure: string;
+    executes: string;
 }
