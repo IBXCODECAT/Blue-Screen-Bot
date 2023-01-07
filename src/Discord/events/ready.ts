@@ -11,8 +11,8 @@ export = {
     {
         console.log(`Discord Client [${client.application?.id}] is ready!`);
         
-        PostInteractions(client); //Call this functiomn to register all slash commands
-        //DeleteInteractions(client); //Call this function to delete all global commands
+        //PostInteractions(client); //Call this functiomn to register all slash commands
+        DeleteInteractions(client); //Call this function to delete all global commands
 
         client.user?.setActivity(`${client.guilds.cache.size} servers!`, ({type: ActivityType.Watching }))
     }

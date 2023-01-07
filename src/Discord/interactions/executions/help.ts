@@ -28,6 +28,7 @@ export async function Run(client: Client, interaction: Interaction) {
         messageContent += `${toUnderline(command.name)} - ${command.helpMessageDescription}\n`;
     });
 
+    messageContent += `\nNOTE: Blue Bot is far from being released and functionality is limited. Join https://discord.gg/Zy5uXQUZXx to test features early!`
     interaction.reply({
         content: messageContent,
         ephemeral: true

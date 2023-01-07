@@ -16,4 +16,4 @@ const discordClient = new Client({
 discordClient.on('warn', console.log);
 
 Discord(discordClient)
-SetupGoogle();
+//SetupGoogle();
