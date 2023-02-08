@@ -6,7 +6,7 @@ export function PlayFabInit()
     PlayFab.settings.titleId = "8BD04";
 }
 
-async function LoginWithPlayfab(username: string, password: string) 
+export async function LoginWithPlayfab(username: string, password: string) 
 {
     let loginRequest = 
     {
