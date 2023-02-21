@@ -2,7 +2,6 @@ import { Client, IntentsBitField } from 'discord.js';
 import { config } from 'dotenv';
 import { Discord } from './Discord/discord'
 import { SetupGoogle } from './Google/google';
-import { PlayFabInit } from './PlayFab/playfab';
 
 config();
 
@@ -18,4 +17,3 @@ discordClient.on('warn', console.log);
 
 Discord(discordClient)
 //SetupGoogle();
-PlayFabInit();
