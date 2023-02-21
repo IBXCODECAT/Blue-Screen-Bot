@@ -6,6 +6,7 @@ declare global {
         DISCORD_CLIENT_ID: string;
         BSS_GUILD: string;
         BSS_LOG: string;
+        COOKIE_SECRET: string;
       }
     }
   }

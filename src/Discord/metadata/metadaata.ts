@@ -1,0 +1,113 @@
+import { Client, REST, Routes } from "discord.js";
+import { GetMessageContextCommandDefinitions as GetContextCommandDefinitions, GetSlashCommandDefinitions } from "../../scripts/filesystem";
+import { IMessageContextCommand as IContextCommand } from "../interactions/interfaces/contextCommand";
+import { ISlashCommand } from "../interactions/interfaces/slashCommand";
+
+const slashCommandDefs: Array<ISlashCommand> = GetSlashCommandDefinitions();
+const contextCommandDefs: Array<IContextCommand> = GetContextCommandDefinitions();
+
+const interactions: Array<any> = [slashCommandDefs, contextCommandDefs]
+
+//Delete Interaction Metadata from Discord
+export async function InteractionMetadataDelete(client: Client)
+{
+    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN!);
+
+    rest.put(Routes.applicationCommands(process.env.DISCORD_CLIENT_ID!), { body: [] })
+        .then(() => console.log('Successfully deleted all application commands.'))
+        .catch(console.error);
+
+    rest.put(Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID!, "888875214459535360"), { body: [] })
+        .then(() => console.log('Successfully deleted all BSS_PUBLIC guild commands.'))
+        .catch(console.error);
+
+    rest.put(Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID!, "929815024158003280"), { body: [] })
+        .then(() => console.log('Successfully deleted all BSS_LABS guild commands.'))
+        .catch(console.error);
+
+    rest.put(Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID!, "913885055598886922"), { body: [] })
+        .then(() => console.log('Successfully deleted all BSS_STAFF guild commands.'))
+        .catch(console.error);
+}
+
+//Delete Linked Roles metadata from Discord
+export async function LinkedRoleMetadataDelete(client: Client)
+{
+    const rest = new REST({ version: `10` }).setToken(process.env.DISCORD_TOKEN!);
+
+    rest.put(`/applications/${process.env.DISCORD_CLIENT_ID}/role-connections/metadata`, { body: [] })
+        .then(() => console.log(`Successfully deleted all linked role metadata!`))
+        .catch(console.error);
+}
+
+//Post Interaction Metadata to Discord
+export async function InteractionMetadataCreate(client: Client)
+{
+    let commands = client.application?.commands;
+
+    let count = 1;
+
+    for(const interactionGroup of interactions)
+    {
+        for(const interaction of interactionGroup)
+        {
+            await commands?.create({
+                name: interaction.name,
+                type: interaction.type,
+                description: interaction.description || undefined,
+                options: interaction.options || undefined
+            });
+        }
+    }
+}
+
+//Post Linked Roles metadata to Discord
+export async function LinkedRoleMetadataCreate(client: Client)
+{
+    /**
+ * Register the metadata to be stored by Discord. This should be a one time action.
+ * Note: uses a Bot token for authentication, not a user token.
+ */
+    const url = `https://discord.com/api/v10/applications/${process.env.DISCORD_CLIENT_ID}/role-connections/metadata`;
+    // supported types: number_lt=1, number_gt=2, number_eq=3 number_neq=4, datetime_lt=5, datetime_gt=6, boolean_eq=7
+    const body =
+    [
+        {
+            key: 'cookieseaten',
+            name: 'Cookies Eaten',
+            description: 'Cookies Eaten Greater Than',
+            type: 2,
+        },
+        {
+            key: 'allergictonuts',
+            name: 'Allergic To Nuts',
+            description: 'Is Allergic To Nuts',
+            type: 7,
+        },
+        {
+            key: 'bakingsince',
+            name: 'Baking Since',
+            description: 'Days since baking their first cookie',
+            type: 6,
+        },
+    ];
+
+    const response = await fetch(url,{
+        method: 'PUT',
+        body: JSON.stringify(body),
+        headers: 
+        {
+            'Content-Type': 'application/json',
+            Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
+        },
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+    } else {
+        //throw new Error(`Error pushing discord metadata schema: [${response.status}] ${response.statusText}`);
+        const data = await response.text();
+        console.log(data);
+    }
+}
