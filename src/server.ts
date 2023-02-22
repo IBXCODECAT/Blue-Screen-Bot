@@ -1,11 +1,13 @@
 import { Client, IntentsBitField } from 'discord.js';
 import { config } from 'dotenv';
-import { DiscordInit, getOAuthTokens, getOAuthUrl } from './Discord/discord'
+import { DiscordInit, getOAuthTokens, getOAuthUrl, getUserData } from './Discord/discord'
 
 config();
 
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
+import { storeDiscordTokens } from './storage';
+import { updateMetadata } from './Discord/metadata/metadaata';
 
 
 const https = express();
@@ -64,10 +66,11 @@ https.get('/oauth2-callback', async (req, res) => {
         const tokens = await getOAuthTokens(code);
     
         // 2. Uses the Discord Access Token to fetch the user profile
-        /*
-        const meData = await discord.getUserData(tokens);
+        
+        const meData = await getUserData(tokens);
         const userId = meData.user.id;
-        await storage.storeDiscordTokens(userId, {
+        
+        await storeDiscordTokens(userId, {
             access_token: tokens.access_token,
             refresh_token: tokens.refresh_token,
             expires_at: Date.now() + tokens.expires_in * 1000,
@@ -75,8 +78,8 @@ https.get('/oauth2-callback', async (req, res) => {
 
         // 3. Update the users metadata, assuming future updates will be posted to the `/update-metadata` endpoint
         await updateMetadata(userId);
-        */
-        res.send('You did it!  Now go back to Discord.');
+        
+        res.redirect("https://discord.com/oauth2/authorized");
     } catch (e) {
         console.error(e);
         res.sendStatus(500);

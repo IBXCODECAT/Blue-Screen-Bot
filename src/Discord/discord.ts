@@ -3,6 +3,8 @@ import { Client } from 'discord.js';
 import { config } from 'dotenv';
 import * as fs from 'fs';
 import * as crypto from 'crypto';
+import { storeDiscordTokens } from '../storage';
+import fetch from 'node-fetch';
 
 //Configure dotenv
 config();
@@ -79,4 +81,61 @@ export async function getOAuthTokens(code: string) {
     } else {
         throw new Error(`Error fetching OAuth tokens: [${response.status}] ${response.statusText}`);
     }
-  }
+}
+
+/**
+ * Given a user based access token, fetch profile information for the current user.
+ */
+export async function getUserData(tokens: any) {
+    const url = 'https://discord.com/api/v10/oauth2/@me';
+    const response = await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${tokens.access_token}`,
+        },
+    });
+    
+    if (response.ok) {
+        const data = await response.json();
+        return data;
+    } else {
+        throw new Error(`Error fetching user data: [${response.status}] ${response.statusText}`);
+    }
+}
+
+/**
+ * The initial token request comes with both an access token and a refresh
+ * token.  Check if the access token has expired, and if it has, use the
+ * refresh token to acquire a new, fresh access token.
+ */
+export async function getAccessToken(userId: string, tokens: any) {
+    if (Date.now() > tokens.expires_at) {
+        
+        const url = 'https://discord.com/api/v10/oauth2/token';
+        
+        const body = new URLSearchParams({
+            client_id: process.env.DISCORD_CLIENT_ID!,
+            client_secret: process.env.DISCORD_CLIENT_SECRET!,
+            grant_type: 'refresh_token',
+            refresh_token: tokens.refresh_token,
+        });
+
+        const response = await fetch(url, {
+            body,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
+
+      if (response.ok) {
+            const tokens = await response.json();
+            tokens.access_token = tokens.access_token;
+            tokens.expires_at = Date.now() + tokens.expires_in * 1000;
+            await storeDiscordTokens(userId, tokens);
+            return tokens.access_token;
+        } else {
+            throw new Error(`Error refreshing access token: [${response.status}] ${response.statusText}`);
+        }
+    }
+    return tokens.access_token;
+}
