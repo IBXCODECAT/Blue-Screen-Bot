@@ -8,7 +8,7 @@ export async function Run(client:Client, interaction: Interaction) {
     
     if(interaction.isMessageContextMenuCommand())
     {
-        interaction.deferReply({
+        await interaction.deferReply({
             ephemeral: true
         });
         

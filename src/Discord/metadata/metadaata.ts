@@ -49,18 +49,26 @@ export async function LinkedRoleMetadataDelete(client: Client)
 //Post Interaction Metadata to Discord
 export async function InteractionMetadataCreate(client: Client)
 {
-    let commands = client.application?.commands;
+    let globalCommands = client.application?.commands;
+    //let guildCommands = client. DO STUFF
 
     for(const interactionGroup of interactions)
     {
         for(const interaction of interactionGroup)
         {
-            await commands?.create({
-                name: interaction.name,
-                type: interaction.type,
-                description: interaction.description || undefined,
-                options: interaction.options || undefined
-            });
+            if(interaction.global)
+            {
+                await globalCommands?.create({
+                    name: interaction.name,
+                    type: interaction.type,
+                    description: interaction.description || undefined,
+                    options: interaction.options || undefined
+                });
+            }
+            else
+            {
+
+            }
         }
     }
 }
