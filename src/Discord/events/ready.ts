@@ -1,5 +1,5 @@
 import { ActivityType, Client } from 'discord.js';
-import { DeleteInteractions, PostInteractions } from '../interactions/handler';
+import { InteractionMetadataDelete, InteractionMetadataCreate, LinkedRoleMetadataCreate, LinkedRoleMetadataDelete } from '../metadata/metadaata';
 
 
 export = {
@@ -11,8 +11,11 @@ export = {
     {
         console.log(`Discord Client [${client.application?.id}] is ready!`);
         
-        //PostInteractions(client); //Call this functiomn to register all slash commands
-        DeleteInteractions(client); //Call this function to delete all global commands
+        //InteractionMetadataCreate(client); //Call this functiomn to register all slash commands
+        //InteractionMetadataDelete(client); //Call this function to remove all commands
+
+        //LinkedRoleMetadataCreate(client); //Call this function to link all linked roles
+        //LinkedRoleMetadataDelete(client); //Call this function to remove all linked roles
 
         client.user?.setActivity(`${client.guilds.cache.size} servers!`, ({type: ActivityType.Watching }))
     }

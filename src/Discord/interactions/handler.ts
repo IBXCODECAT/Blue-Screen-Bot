@@ -1,4 +1,4 @@
-import { Client, EmbedBuilder, Interaction, PermissionsBitField, REST, Routes } from "discord.js";
+import { Client, EmbedBuilder, Interaction, PermissionsBitField } from "discord.js";
 import { GetMessageContextCommandDefinitions as GetContextCommandDefinitions, GetSlashCommandDefinitions } from "../../scripts/filesystem";
 import { CheckClientPermissions, PermissionCheck } from "../scripts/permissions";
 import { IMessageContextCommand as IContextCommand } from "./interfaces/contextCommand";
@@ -10,70 +10,48 @@ const contextCommandDefs: Array<IContextCommand> = GetContextCommandDefinitions(
 
 const interactions: Array<any> = [slashCommandDefs, contextCommandDefs]
 
-export async function DeleteInteractions(client: Client)
-{
-    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN!);
-
-    rest.put(Routes.applicationCommands(process.env.DISCORD_CLIENT_ID!), { body: [] })
-        .then(() => console.log('Successfully deleted all application commands.'))
-        .catch(console.error);
-
-    rest.put(Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID!, "888875214459535360"), { body: [] })
-        .then(() => console.log('Successfully deleted all BSS_PUBLIC guild commands.'))
-        .catch(console.error);
-
-    rest.put(Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID!, "929815024158003280"), { body: [] })
-        .then(() => console.log('Successfully deleted all BSS_LABS guild commands.'))
-        .catch(console.error);
-
-    rest.put(Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID!, "913885055598886922"), { body: [] })
-        .then(() => console.log('Successfully deleted all BSS_STAFF guild commands.'))
-        .catch(console.error);
-}
-
-export async function PostInteractions(client: Client)
-{
-    let commands = client.application?.commands;
-
-    let count = 1;
-
-    for(const interactionGroup of interactions)
-    {
-        for(const interaction of interactionGroup)
-        {
-            await commands?.create({
-                name: interaction.name,
-                type: interaction.type,
-                description: interaction.description || undefined,
-                options: interaction.options || undefined
-            });
-        }
-    }
-}
-
 export async function HandleInteraction(client: Client, interaction: Interaction)
 {
     if(interaction.isCommand() || interaction.isMessageContextMenuCommand())
     {
         const { commandName: commandName } = interaction;
         let useDefinition: ISlashCommand | IContextCommand;
-        let executablePath;
+        let m_executable;
 
         for(const interactionGroup of interactions)
         {
             for(const interaction of interactionGroup)
             {
+                console.log(interaction);
+
                 if(interaction.name == commandName)
                 {
                     useDefinition = interaction;
-                    executablePath = require(`${path}\\src\\Discord\\interactions\\executions\\${useDefinition.executes}`);
+                    
+                    let executablePath = `${path}\\src\\Discord\\interactions\\executions\\${useDefinition.executes}`;
+                
+                    console.log(executablePath);
+
+                    m_executable = require(executablePath);
                 }
             }
         }
 
+        if(m_executable == undefined)
+        {
+            console.log("It appears you are trying to run a command which no longer has an execution procedure. Use **/bot-support** to be directed to the support server.");
+            
+            await interaction.reply({
+                content: "It appears you are trying to run a command which no longer has an execution procedure. Use the **/bot-support** command to be directed to the support server.",
+                ephemeral: false
+            })
+            
+            return;
+        }
+
         if(CheckClientPermissions(client, interaction.guild))
         {
-            executablePath.Run(client, interaction);
+            await m_executable.Run(client, interaction);
         }
         else
         {
@@ -98,6 +76,5 @@ export async function HandleInteraction(client: Client, interaction: Interaction
                 console.log("No Permissions");
             }
         }
-
     }
 }
