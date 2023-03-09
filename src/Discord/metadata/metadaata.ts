@@ -4,8 +4,6 @@ import { IMessageContextCommand as IContextCommand } from "../interactions/inter
 import { ISlashCommand } from "../interactions/interfaces/slashCommand";
 
 import fetch from 'node-fetch';
-import { getAccessToken } from "../discord";
-import { getDiscordTokens } from "../../storage";
 
 const slashCommandDefs: Array<ISlashCommand> = GetSlashCommandDefinitions();
 const contextCommandDefs: Array<IContextCommand> = GetContextCommandDefinitions();
@@ -120,85 +118,3 @@ export async function LinkedRoleMetadataCreate(client: Client)
 }
 
 //#endregion Application Metadata
-
-/**
- * Given metadata that matches the linked roles schema, push that data to Discord on behalf
- * of the current user.
- */
-export async function pushMetadata(userId: string, tokens: any, metadata: any) {
-    // GET/PUT /users/@me/applications/:id/role-connection
-    const url = `https://discord.com/api/v10/users/@me/applications/${process.env.DISCORD_CLIENT_ID!}/role-connection`;
-    const accessToken = await getAccessToken(userId, tokens);
-    
-    const body = {
-        platform_name: 'Blue Screen Studios Account',
-        metadata,
-    };
-    
-    const response = await fetch(url, {
-        method: 'PUT',
-        body: JSON.stringify(body),
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-    });
-    
-    if (!response.ok) {
-        throw new Error(`Error pushing discord metadata: [${response.status}] ${response.statusText}`);
-    }
-}
-
-/**
- * Fetch the metadata currently pushed to Discord for the currently logged
- * in user, for this specific bot.
- */
-export async function getMetadata(userId: string, tokens: any) {
-    // GET/PUT /users/@me/applications/:id/role-connection
-    const url = `https://discord.com/api/v10/users/@me/applications/${process.env.DISCORD_CLIENT_ID!}/role-connection`;
-    const accessToken = await getAccessToken(userId, tokens);
-    const response = await fetch(url, {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-        },
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        return data;
-    } else {
-        throw new Error(`Error getting discord metadata: [${response.status}] ${response.statusText}`);
-    }
-}
-
-/**
- * Given a Discord UserId, push static make-believe data to the Discord 
- * metadata endpoint. 
- */
-export async function updateMetadata(userId: string) {
-    // Fetch the Discord tokens from storage
-    const tokens = await getDiscordTokens(userId);
-      
-    let metadata = {};
-    try {
-        // Fetch the new metadata you want to use from an external source. 
-        // This data could be POST-ed to this endpoint, but every service
-        // is going to be different.  To keep the example simple, we'll
-        // just generate some random data. 
-        metadata = {
-            is_employee: true,
-            has_account: true
-        };
-    } catch (e: any) {
-        e.message = `Error fetching external data: ${e.message}`;
-        console.error(e);
-        // If fetching the profile data for the external service fails for any reason,
-        // ensure metadata on the Discord side is nulled out. This prevents cases
-        // where the user revokes an external app permissions, and is left with
-        // stale linked role data.
-    }
-  
-    // Push the data to Discord.
-    await pushMetadata(userId, tokens, metadata);
-  }
-  

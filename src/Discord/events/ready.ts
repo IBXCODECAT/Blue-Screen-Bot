@@ -12,7 +12,7 @@ export = {
         console.log(`Discord Client [${client.application?.id}] is ready!`);
         
         //InteractionMetadataCreate(client); //Call this functiomn to register all slash commands
-        //DeleteInteractions(client); //Call this function to remove all commands
+        //InteractionMetadataDelete(client); //Call this function to remove all commands
 
         //LinkedRoleMetadataCreate(client); //Call this function to link all linked roles
         //LinkedRoleMetadataDelete(client); //Call this function to remove all linked roles

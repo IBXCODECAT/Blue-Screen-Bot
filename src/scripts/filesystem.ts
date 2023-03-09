@@ -4,15 +4,15 @@ import { IMessageContextCommand } from '../Discord/interactions/interfaces/conte
 
 import { ISlashCommand } from "../Discord/interactions/interfaces/slashCommand";
 
-//The extension to use when searching the file system (ts for ts-node, js for js-node)
-export const ModuleFileExtension = '.ts';
-
 //This is the path to the command definitions & procedures directories
 const commandDefsPath = `${process.cwd()}/src/Discord/interactions/definitions/`
 
+
+export const fileExtension = '.js';
+
 export function GetSlashCommandDefinitions(): Array<ISlashCommand> {
   //Fetch a list of all command definitions in the command definitions directory
-  const commandDefinitionFiles = fs.readdirSync(commandDefsPath).filter((file: string) => file.endsWith(ModuleFileExtension));
+  const commandDefinitionFiles = fs.readdirSync(commandDefsPath).filter((file: string) => file.endsWith(fileExtension));
 
   //Create a new array to return with our command definitons
   let commandDefinitions: Array<ISlashCommand> = new Array<ISlashCommand>;
@@ -36,7 +36,7 @@ export function GetSlashCommandDefinitions(): Array<ISlashCommand> {
 
 export function GetMessageContextCommandDefinitions(): Array<IMessageContextCommand> {
   //Fetch a list of all command definitions in the command definitions directory
-  const commandDefinitionFiles = fs.readdirSync(commandDefsPath).filter((file: string) => file.endsWith(ModuleFileExtension));
+  const commandDefinitionFiles = fs.readdirSync(commandDefsPath).filter((file: string) => file.endsWith(fileExtension));
 
   //Create a new array to return with our command definitons
   let commandDefinitions: Array<IMessageContextCommand> = new Array<IMessageContextCommand>;
