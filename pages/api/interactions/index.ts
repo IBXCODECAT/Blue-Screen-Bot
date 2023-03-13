@@ -1,7 +1,7 @@
 import axios from "axios"
 import { NextApiRequest, NextApiResponse } from "next"
 import { customAlphabet } from "nanoid"
-import { APIApplicationCommandInteraction, APIEmbed, APIInteractionResponse } from "discord-api-types/v8"
+import { APIApplicationCommandInteraction, APIChatInputApplicationCommandInteraction, APIEmbed, APIInteractionResponse } from "discord-api-types/v10"
 import withDiscordInteraction from "middlewares/discord-interaction"
 import withErrorHandler from "middlewares/error-handler"
 
@@ -65,9 +65,7 @@ const handler = async (
   res: NextApiResponse<APIInteractionResponse>,
   interaction: APIApplicationCommandInteraction
 ) => {
-  const {
-    data: { name, options },
-  } = interaction
+  const { data: { name, options }, } = interaction as APIChatInputApplicationCommandInteraction
 
   switch (name) {
     case "ping":
