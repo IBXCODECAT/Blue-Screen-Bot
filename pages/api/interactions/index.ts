@@ -1,15 +1,17 @@
 import axios from "axios"
 import { NextApiRequest, NextApiResponse } from "next"
 import { customAlphabet } from "nanoid"
-import { APIApplicationCommandInteraction, APIChatInputApplicationCommandInteraction, APIEmbed, APIInteractionResponse } from "discord-api-types/v10"
+import { APIApplicationCommandInteraction, APIChatInputApplicationCommandInteraction, APIEmbed, APIInteractionResponse, MessageFlags } from "discord-api-types/v10"
 import withDiscordInteraction from "middlewares/discord-interaction"
 import withErrorHandler from "middlewares/error-handler"
 
 const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz-", 16)
 
-const BASE_RESPONSE = { type: 4 }
+const BASE_RESPONSE = { type: 4, flags: [ MessageFlags.Ephemeral ] }
+
 const INVALID_COMMAND_RESPONSE = { ...BASE_RESPONSE, data: { content: "You have executed a command that does not exist in my directory. Try again later or run **/bot-support** to contact the developers.", ephemeral: true } }
 const PING_COMMAND_RESPONSE = { ...BASE_RESPONSE, data: { content: "Pong! As of March 9 2023 I started using an interactions endpoint URI and therefore I am unable to calculate ping times :(", ephemeral: true } }
+const BOT_SUPPORT_RESPONSE = { ...BASE_RESPONSE, data: { content: "Here is the link to the bot support server!\n\nhttps://discord.gg/Zy5uXQUZXx" }}
 
 const baseRandomPicEmbed = {
   title: "Random Pic",
@@ -70,6 +72,8 @@ const handler = async (
   switch (name) {
     case "ping":
       return res.status(200).json(PING_COMMAND_RESPONSE)
+    case "bot-support":
+      return res.status(200).json(BOT_SUPPORT_RESPONSE)
     case "randompic":
       if (!options) {
         throw new Error()
@@ -77,7 +81,7 @@ const handler = async (
       return res.status(200).json({
         type: 4,
         data: {
-          // @ts-ignore
+          //@ts-ignore
           embeds: [await getEmbed(options[0].value)],
         },
       })
