@@ -1,4 +1,4 @@
-import { APIApplicationCommandInteraction, APIInteractionResponse } from "discord-api-types/v8"
+import { APIApplicationCommandInteraction, APIInteractionResponse } from "discord-api-types/v10"
 import { NextApiRequest, NextApiResponse } from "next"
 
 export type DiscordInteractionApiHandler = (

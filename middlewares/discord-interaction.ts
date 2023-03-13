@@ -1,4 +1,4 @@
-import { APIApplicationCommandInteraction } from "discord-api-types/v8"
+import { APIApplicationCommandInteraction, InteractionType } from "discord-api-types/v10"
 import { DiscordInteractionApiHandler } from "interfaces/discord"
 import { NextApiRequest, NextApiResponse } from "next"
 import nacl from "tweetnacl"
@@ -31,7 +31,6 @@ export const verifyHeaders = ({ timestamp, rawBody, signature }: VerifyHeadersAr
 
 /**
  * Middleware to verify the validity of the incoming webhook request according to https://discord.com/developers/docs/interactions/slash-commands#security-and-authorization
- *
  * When using this middleware, your API route handler must disable body parsing
  */
 const withDiscordInteraction = (next: DiscordInteractionApiHandler) => async (
@@ -55,7 +54,8 @@ const withDiscordInteraction = (next: DiscordInteractionApiHandler) => async (
     const interaction: APIApplicationCommandInteraction = JSON.parse(rawBody)
     const { type } = interaction
 
-    if (type === 1) {
+    //@ts-ignore
+    if (type === InteractionType.Ping) {
       // PING message, respond with ACK (part of Discord's security and authorization protocol)
       return res.status(200).json({ type: 1 })
     } else {
