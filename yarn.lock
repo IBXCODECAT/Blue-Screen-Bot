@@ -64,9 +64,9 @@
   dependencies:
     tslib "^2.4.0"
 
-"@types/node@^18.15.1":
-  version "18.15.1"
-  resolved "https://registry.npmjs.org/@types/node/-/node-18.15.1.tgz"
+"@types/node@^18.15.3":
+  version "18.15.3"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.15.3.tgz#f0b991c32cfc6a4e7f3399d6cb4b8cf9a0315014"
 
 "@types/prop-types@*":
   version "15.7.3"
