@@ -7,32 +7,11 @@ import withErrorHandler from "middlewares/error-handler"
 
 const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz-", 16)
 
-const BASE_RESPONSE = { type: 4 }
+const BASE_RESPONSE = { type: 4, flags: [ MessageFlags.Ephemeral ] }
 
-const INVALID_COMMAND_RESPONSE = {
-  ...BASE_RESPONSE, 
-  data: { 
-    content: "You have executed a command that does not exist in my directory. Try again later or run **/bot-support** to contact the developers.",
-    flags: [ MessageFlags.Ephemeral ]
-  }
-}
-
-const PING_COMMAND_RESPONSE = 
-{
-  ...BASE_RESPONSE,
-  data: {
-    content: "Pong! As of March 9 2023 I started using an interactions endpoint URI and therefore I am unable to calculate ping times :(",
-    flags: [ MessageFlags.Ephemeral ]
-  }
-}
-
-const BOT_SUPPORT_RESPONSE = {
-  ...BASE_RESPONSE,
-  data: {
-    content: "Here is the link to the bot support server!\n\nhttps://discord.gg/Zy5uXQUZXx",
-    flags: [ MessageFlags.Ephemeral ]
-  }
-}
+const INVALID_COMMAND_RESPONSE = { ...BASE_RESPONSE, data: { content: "You have executed a command that does not exist in my directory. Try again later or run **/bot-support** to contact the developers.", ephemeral: true } }
+const PING_COMMAND_RESPONSE = { ...BASE_RESPONSE, data: { content: "Pong! As of March 9 2023 I started using an interactions endpoint URI and therefore I am unable to calculate ping times :(", ephemeral: true } }
+const BOT_SUPPORT_RESPONSE = { ...BASE_RESPONSE, data: { content: "Here is the link to the bot support server!\n\nhttps://discord.gg/Zy5uXQUZXx" }}
 
 const baseRandomPicEmbed = {
   title: "Random Pic",
