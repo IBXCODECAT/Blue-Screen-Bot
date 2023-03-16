@@ -1,21 +1,26 @@
 import axios from "axios"
 import { APIApplicationCommand } from "discord-api-types/v10"
 
-const DISCORD_APP_ID = process.env.DISCORD_APP_ID
-const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
+export const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN!;
+export const CLIENT_ID = process.env.DISCORD_APP_ID!;
+export const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET!;
+export const REDIRECT_URI = process.env.OAUTH2_REDIRECT_URI!;
 
-if (!DISCORD_APP_ID || !DISCORD_BOT_TOKEN) {
+export const API_URL = "https://discord.com/api/v10";
+
+if (!BOT_TOKEN || !CLIENT_ID || !CLIENT_SECRET || !REDIRECT_URI) {
   throw new Error("Environment variables not configured correctly")
 }
 
-export const discordClient = axios.create({
-  baseURL: "https://discord.com/api/v10",
-  headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` },
+export const DISCORD_CLIENT = axios.create({
+  BASE_URL: "https://discord.com/api/v10",
+  HEADERS: { Authorization: `Bot ${BOT_TOKEN}` },
 })
 
+
 export const getGlobalCommands = () =>
-  discordClient.get<APIApplicationCommand[]>(`/applications/${DISCORD_APP_ID}/commands`)
+  DISCORD_CLIENT.get<APIApplicationCommand[]>(`/applications/${CLIENT_ID}/commands`)
 
 export type CreateGlobalCommand = Omit<APIApplicationCommand, "id" | "application_id">
 export const createGlobalCommand = (command: CreateGlobalCommand) =>
-  discordClient.post<APIApplicationCommand>(`/applications/${DISCORD_APP_ID}/commands`, command)
+  DISCORD_CLIENT.post<APIApplicationCommand>(`/applications/${CLIENT_ID}/commands`, command)
