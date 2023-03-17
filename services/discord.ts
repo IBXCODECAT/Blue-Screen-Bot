@@ -52,7 +52,11 @@ export async function UpdateMetadata(userId: number) {
   // Fetch the Discord tokens from storage
   const tokens = await GetDiscordTokens(userId);
     
-  let metadata = {};
+  let metadata = {
+    is_employee: 1,
+    has_account: 0,
+  };
+
   try {
     //611649234848186388 = IBX,
     //994362736270135376 = BSS,
@@ -61,6 +65,7 @@ export async function UpdateMetadata(userId: number) {
     //806217031098695704 = Krok,
     //174262233545572352 = Tony
     //
+    
     if(userId == 611649234848186388 || 
       userId == 994362736270135376 || 
       userId == 1005300704379932784 || 
@@ -71,14 +76,7 @@ export async function UpdateMetadata(userId: number) {
           is_employee: 1, // 0 for false, 1 for true
           has_account: 0, // 0 for false, 1 for true
         };
-      }
-      else
-      {
-        metadata = {
-          is_employee: 0,
-          has_account: 0
-        }
-      }
+    }
     
   } catch (ex: any) {
     ex.message = `Error fetching external data: ${ex.message}`;
@@ -102,9 +100,12 @@ export async function PushMetadata(userId: number, tokens: any, metadata: any) {
   const url = `https://discord.com/api/v10/users/@me/applications/${DISCORD_CLIENT}/role-connection`;
   const accessToken = await GetAccessToken(userId, tokens);
   const body = {
-    platform_name: 'Blue Screen Studios Account',
+    platform_name: 'Blue Screen Studios',
     metadata,
   };
+
+  console.log(metadata);
+
   const response = await fetch(url, {
     method: 'PUT',
     body: JSON.stringify(body),
@@ -113,7 +114,29 @@ export async function PushMetadata(userId: number, tokens: any, metadata: any) {
       'Content-Type': 'application/json',
     },
   });
+
   if (!response.ok) {
     throw new Error(`Error pushing discord metadata: [${response.status}] ${response.statusText}`);
+  }
+}
+
+/**
+ * Fetch the metadata currently pushed to Discord for the currently logged
+ * in user, for this specific bot.
+ */
+export async function GetMetadata(userId: number, tokens: any) {
+  // GET /users/@me/applications/:id/role-connection
+  const url = `https://discord.com/api/v10/users/@me/applications/${CLIENT_ID}/role-connection`;
+  const accessToken = await GetAccessToken(userId, tokens);
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    throw new Error(`Error getting discord metadata: [${response.status}] ${response.statusText}`);
   }
 }

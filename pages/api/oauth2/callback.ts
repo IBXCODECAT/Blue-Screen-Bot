@@ -20,7 +20,7 @@ export default async function handler(req: any, res: any) {
         const clientState = getCookie('clientState', {req, res});
         if (clientState !== state) {
             console.error('State verification failed.');
-            return res.status(403).json({error: "403 Unauthorized"});
+            return res.status(403).json({code: 403, type: "Unauthorized"});
         }
 
         const url = API_URL + "/oauth2/token"; //url = 'https://discord.com/api/v10/oauth2/token';
@@ -67,6 +67,6 @@ export default async function handler(req: any, res: any) {
     }
     catch (ex){
         console.error(ex);
-        res.status(500).json({error: "500 Internal Exception"});
+        res.status(500).json({code: 500, type: "Internal", ex: `${ex}`});
     }
 }
