@@ -1,15 +1,22 @@
 import { getCookie } from "cookies-next";
-import { API_URL, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } from "services/discord"
+import { API_URL, CLIENT_ID, CLIENT_SECRET, GetUserData, REDIRECT_URI, UpdateMetadata } from "services/discord"
+import { StoreDiscordTokens } from "services/storage";
 
 // req = HTTP incoming message, res = HTTP server response
 export default async function handler(req: any, res: any) {
     
+    let tokens;
+
+    /**
+     * Given an OAuth2 code from the scope approval page, make a request to Discord's
+     * OAuth2 service to retrieve an access token, refresh token, and expiration.
+     */
     try {
         //Use the code and state to acquire Discord OAuth2 tokens
         const code = req.query['code'];
         const state = req.query['state'];
 
-        // make sure the state parameter exists
+        // make sure the state parameter exists and that the request wasn't forged from another app
         const clientState = getCookie('clientState', {req, res});
         if (clientState !== state) {
             console.error('State verification failed.');
@@ -36,12 +43,26 @@ export default async function handler(req: any, res: any) {
 
         if(response.ok)
         {
+            tokens = await response.json();
             console.log("ok");
+
+            //Use the Discord Access Token to fetch the user profile
+            const meData = await GetUserData(tokens);
+            const userId = meData.user.id;
+
+            await StoreDiscordTokens(userId, {
+                access_token: tokens.access_token,
+                refresh_token: tokens.refresh_token,
+                expires_at: Date.now() + tokens.expires_in * 1000,
+            });
+
+            //Update the user's metadata
+            await UpdateMetadata(userId);
+
+            console.log("Authorized & Updated: " + userId);
+
+            //Redirect to Discord's "authorized" page
             res.redirect("https://discord.com/oauth2/authorized");
-        }
-        else
-        {
-            console.error(response)
         }
     }
     catch (ex){
