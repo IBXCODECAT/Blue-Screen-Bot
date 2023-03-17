@@ -13,8 +13,8 @@ if (!BOT_TOKEN || !CLIENT_ID || !CLIENT_SECRET || !REDIRECT_URI) {
 }
 
 export const DISCORD_CLIENT = axios.create({
-  BASE_URL: "https://discord.com/api/v10",
-  HEADERS: { Authorization: `Bot ${BOT_TOKEN}` },
+  baseURL: "https://discord.com/api/v10",
+  headers: { Authorization: `Bot ${BOT_TOKEN}` },
 })
 
 
