@@ -1,5 +1,5 @@
 import { getCookie } from "cookies-next";
-import { API_URL, CLIENT_ID, CLIENT_SECRET, GetUserData, REDIRECT_URI, UpdateMetadata } from "services/discord"
+import { API_URL, CLIENT_ID, CLIENT_SECRET, GetMetadata, GetUserData, REDIRECT_URI, UpdateMetadata } from "services/discord"
 import { StoreDiscordTokens } from "services/storage";
 
 // req = HTTP incoming message, res = HTTP server response
@@ -57,7 +57,9 @@ export default async function handler(req: any, res: any) {
             });
 
             //Update the user's metadata
-            await UpdateMetadata(userId);
+            const x = await GetMetadata(userId, tokens);
+
+            console.log(x);
 
             console.log("Authorized & Updated: " + userId);
 

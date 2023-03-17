@@ -53,7 +53,7 @@ export async function UpdateMetadata(userId: number) {
   const tokens = await GetDiscordTokens(userId);
     
   let metadata = {
-    is_employee: 1,
+    is_employee: 0,
     has_account: 0,
   };
 
@@ -64,8 +64,7 @@ export async function UpdateMetadata(userId: number) {
     //596533034816372736 = Lucky,
     //806217031098695704 = Krok,
     //174262233545572352 = Tony
-    //
-    
+
     if(userId == 611649234848186388 || 
       userId == 994362736270135376 || 
       userId == 1005300704379932784 || 
@@ -100,7 +99,7 @@ export async function PushMetadata(userId: number, tokens: any, metadata: any) {
   const url = `https://discord.com/api/v10/users/@me/applications/${DISCORD_CLIENT}/role-connection`;
   const accessToken = await GetAccessToken(userId, tokens);
   const body = {
-    platform_name: 'Blue Screen Studios',
+    platform_name: 'Blue Screen Studios Account',
     metadata,
   };
 
