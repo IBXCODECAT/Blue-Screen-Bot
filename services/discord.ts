@@ -96,15 +96,14 @@ export async function UpdateMetadata(userId: number) {
  */
 export async function PushMetadata(userId: number, tokens: any, metadata: any) {
   // PUT /users/@me/applications/:id/role-connection
-  const url = `https://discord.com/api/v10/users/@me/applications/${DISCORD_CLIENT}/role-connection`;
+  const url = `https://discord.com/api/v10/users/@me/applications/${CLIENT_ID}/role-connection`;
   const accessToken = await GetAccessToken(userId, tokens);
+  
   const body = {
     "platform_name": 'Blue Screen Studios Account',
     "platform_username": null,
     "metadata": metadata,
   };
-
-  console.log("Body Entered: " + JSON.stringify(body));
 
   const response = await fetch(url, {
     method: 'PUT',
@@ -117,11 +116,10 @@ export async function PushMetadata(userId: number, tokens: any, metadata: any) {
 
   console.log(accessToken);
 
+  console.log("STRINGIFYED BODY: " + JSON.stringify(body));
+
   const data = await response.json();
   console.log(data);
-  console.log(CLIENT_ID);
-
-  console.log(JSON.stringify(data));
 
   if (!response.ok) {
     throw new Error(`${JSON.stringify(data)}`);
