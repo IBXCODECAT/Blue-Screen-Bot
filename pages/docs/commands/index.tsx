@@ -26,7 +26,7 @@ export const getServerSideProps = async () => {
 const CommandsPage = ({ slashCommands }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const render = (
     <div>
-      <h1>Blue Screen Bot Documentation</h1>
+      <h1>Blue Bot Documentation</h1>
       <h2>Commands</h2>
       {slashCommands && slashCommands.length > 0 ? (
       <div>
