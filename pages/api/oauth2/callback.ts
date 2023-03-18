@@ -61,6 +61,8 @@ export default async function handler(req: any, res: any) {
 
             console.log(x);
 
+            await UpdateMetadata(userId);
+
             console.log("Authorized & Updated: " + userId);
 
             //Redirect to Discord's "authorized" page

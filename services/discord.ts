@@ -99,11 +99,12 @@ export async function PushMetadata(userId: number, tokens: any, metadata: any) {
   const url = `https://discord.com/api/v10/users/@me/applications/${DISCORD_CLIENT}/role-connection`;
   const accessToken = await GetAccessToken(userId, tokens);
   const body = {
-    platform_name: 'Blue Screen Studios Account',
-    metadata,
+    "platform_name": 'Blue Screen Studios Account',
+    "platform_username": null,
+    "metadata": metadata,
   };
 
-  console.log(metadata);
+  console.log("Body Entered: " + JSON.stringify(body));
 
   const response = await fetch(url, {
     method: 'PUT',
@@ -114,8 +115,16 @@ export async function PushMetadata(userId: number, tokens: any, metadata: any) {
     },
   });
 
+  console.log(accessToken);
+
+  const data = await response.json();
+  console.log(data);
+  console.log(CLIENT_ID);
+
+  console.log(JSON.stringify(data));
+
   if (!response.ok) {
-    throw new Error(`Error pushing discord metadata: [${response.status}] ${response.statusText}`);
+    throw new Error(`${JSON.stringify(data)}`);
   }
 }
 
