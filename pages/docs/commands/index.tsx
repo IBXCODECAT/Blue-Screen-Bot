@@ -16,7 +16,6 @@ export const getServerSideProps = async () => {
         slashCommands.push(data[i]);
       }
     }
-
     return { props: { slashCommands } }
   } catch (err) {
     console.error(err)
@@ -27,8 +26,8 @@ export const getServerSideProps = async () => {
 const CommandsPage = ({ slashCommands }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const render = (
     <div>
-      <div>Blue Screen Bot Documentation</div>
-      <div>Commands</div>
+      <h1>Blue Screen Bot Documentation</h1>
+      <h2>Commands</h2>
       {slashCommands && slashCommands.length > 0 ? (
       <div>
         <table>
@@ -41,7 +40,9 @@ const CommandsPage = ({ slashCommands }: InferGetServerSidePropsType<typeof getS
           <tbody>
             {slashCommands.map((command) => (
               <tr key={command.id}>
-                <td>{command.name} </td>
+                <td>
+                  <a href="#">{command.name}</a> 
+                </td>
                 <td>{command.description} </td>
               </tr>
             ))}
