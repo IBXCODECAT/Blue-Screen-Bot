@@ -46,7 +46,7 @@ const IndexPage = ({ data }: InferGetServerSidePropsType<typeof getServerSidePro
                   <td>{command.id} </td>
                   <td>{command.name} </td>
                   <td>{command.description} </td>
-                  <td>{String(command.default_permission)}</td>
+                  <td>{String(command.default_member_permissions)}</td>
                   <td>{command.options ? <div>{JSON.stringify(command.options[0])}</div> : "No options"}</td>
                 </tr>
               ))}
