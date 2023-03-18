@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { APIApplicationCommandInteraction, APIChatInputApplicationCommandInteraction, APIInteractionResponse, MessageFlags } from "discord-api-types/v10"
 import withDiscordInteraction from "middlewares/discord-interaction"
 import withErrorHandler from "middlewares/error-handler"
+import { getGlobalCommands } from "services/discord"
 
 const BASE_RESPONSE = { type: 4, flags: [ MessageFlags.Ephemeral ] }
 
@@ -16,6 +17,9 @@ export const config = {
   },
 }
 
+const { data } = await getGlobalCommands()
+console.log(data);
+
 //THIS IS THE COMMAND HANDLER I THINK
 const handler = async (
   _: NextApiRequest,
@@ -26,6 +30,8 @@ const handler = async (
   const { data: { name, options }, } = interaction as APIChatInputApplicationCommandInteraction
 
   switch (name) {
+    case "help" || "Need Help?":
+      return;
     case "ping":
       return res.status(200).json(PING_COMMAND_RESPONSE)
     case "bot-support":
@@ -34,5 +40,7 @@ const handler = async (
       return res.status(200).json(INVALID_COMMAND_RESPONSE)
   }
 }
+
+
 
 export default withErrorHandler(withDiscordInteraction(handler))

@@ -13,6 +13,8 @@ export const getServerSideProps = async () => {
 }
 
 const IndexPage = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  console.log(data);
+  
   return (
     <div>
       <h1>Dashboard</h1>

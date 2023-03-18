@@ -22,6 +22,7 @@ export const DISCORD_CLIENT = axios.create({
 export const getGlobalCommands = () =>
   DISCORD_CLIENT.get<APIApplicationCommand[]>(`/applications/${CLIENT_ID}/commands`)
 
+
 export type CreateGlobalCommand = Omit<APIApplicationCommand, "id" | "application_id">
 export const createGlobalCommand = (command: CreateGlobalCommand) =>
   DISCORD_CLIENT.post<APIApplicationCommand>(`/applications/${CLIENT_ID}/commands`, command)
