@@ -43,18 +43,38 @@ export async function InsertGuildInfo(info: GUILD_INFO_OBJ): Promise<boolean>
     {
         //Connect to our database
         await ConnectToDB();
+        console.log("DB OPEN CONNECTION");
     }
 
     try
     {
-        //Make the INSERT request
-        const res = await guild_collection.insertOne(info);
-        console.log(res);
-        success = true;
+        //Check for an existing record
+        const result: GUILD_INFO_OBJ = await guild_collection.findOne({ guild_id: info.guild_id });
+        console.log("FIND DOCUMENT");
+        console.log(result);
+
+        //If a record for this guild does not exist...
+        if(result == null)
+        {
+            //Make the INSERT request
+            const ins = await guild_collection.insertOne(info);
+            console.log("INSERT DOCUMENT");
+            console.log(ins);
+            success = true;
+        }
+        else
+        {
+            //Update the current document to contain the updated settings
+            const upd = await guild_collection.updateOne({ guild_id: info.guild_id }, {$set: info});
+            console.log("UPDATE DOCUMENT");
+            console.log(upd);
+            success = true;
+        }
     }
     catch(ex)
     {
         //Log the error and set success to false
+        console.log("DB ERRROR");
         console.error(ex);
         success = false;
     }
@@ -62,6 +82,7 @@ export async function InsertGuildInfo(info: GUILD_INFO_OBJ): Promise<boolean>
     {
         //Close the connection
         await db_client.close();
+        console.log("DB CLOSE CONNECTION");
         connected = false;
     }
 
