@@ -65,13 +65,15 @@ export async function UpdateMetadata(userId: number) {
     //596533034816372736 = Lucky,
     //806217031098695704 = Krok,
     //174262233545572352 = Tony
+    //157698144640040960 = Cielix
 
     if(userId == 611649234848186388 || 
       userId == 994362736270135376 || 
       userId == 1005300704379932784 || 
       userId == 596533034816372736 || 
       userId == 806217031098695704 ||
-      userId == 174262233545572352) {
+      userId == 174262233545572352 ||
+      userId == 157698144640040960) {
         metadata = {
           is_employee: 1, // 0 for false, 1 for true
           has_account: 0, // 0 for false, 1 for true
